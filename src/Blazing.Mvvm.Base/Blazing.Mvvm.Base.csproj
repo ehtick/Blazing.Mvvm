@@ -11,6 +11,7 @@
 		<PackageProjectUrl>https://github.com/gragra33/Blazing.Mvvm</PackageProjectUrl>
 		<PackageTags>Blazor,Wasm,Web Assembly,Blazor Server,Blazor Web App,Blazor Hybid MAUI,Mvvm,CommunityToolkit</PackageTags>
 		<PackageReleaseNotes>Support for Blazor Web App, Blazor Server, Blazor WebAssembly, Blazor Hybrid, Blazor Hybid MAUI</PackageReleaseNotes>
+		<Version>3.2.0</Version>
 	</PropertyGroup>
 
 	<ItemGroup>

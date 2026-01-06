@@ -6,11 +6,11 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<PackageId>Blazing.Mvvm</PackageId>
 		<Title>MVVM for Blazor using CommunityToolkit.Mvvm with Complex Route Support</Title>
-		<Description>A simple and easy-to-use MVVM implementation for Blazor wrapping CommunityToolkit.Mvvm. Features automatic ViewModel discovery, strongly-typed navigation with multi-parameter route support, parameter resolution, validation support, and dynamic base path detection for YARP and subpath hosting scenarios.</Description>
+		<Description>A simple and easy-to-use MVVM implementation for Blazor wrapping CommunityToolkit.Mvvm. Features automatic ViewModel discovery, strongly-typed navigation with multi-parameter route support, parameter resolution, validation support, Automatic Two-Way Binding, and dynamic base path detection for YARP and subpath hosting scenarios.</Description>
 		<PackageProjectUrl>https://github.com/gragra33/Blazing.Mvvm</PackageProjectUrl>
 		<PackageReadmeFile>readme.md</PackageReadmeFile>
 		<PackageTags>Blazor,Wasm,Web Assembly,Blazor Server,Blazor Web App,Blazor Hybrid MAUI,Mvvm,CommunityToolkit,YARP,Reverse Proxy,Subpath Hosting,Route Parameters,Navigation</PackageTags>
-		<PackageReleaseNotes>V3.2.0: Added comprehensive support for complex route patterns with multiple parameters (e.g., /users/{userId}/posts/{postId}). Enhanced route parameter substitution with query string handling. Updated sample projects to demonstrate multi-parameter navigation patterns.</PackageReleaseNotes>
+		<PackageReleaseNotes>V3.2.0: Added Automatic Two-Way Binding, and comprehensive support for complex route patterns with multiple parameters (e.g., /users/{userId}/posts/{postId}). Enhanced route parameter substitution with query string handling. Updated sample projects to demonstrate multi-parameter navigation patterns.</PackageReleaseNotes>
 		<Version>3.2.0</Version>
 	</PropertyGroup>
 
