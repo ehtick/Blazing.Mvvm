@@ -1,4 +1,4 @@
-﻿# Blazor Extension for the MVVM CommunityToolkit
+# Blazor Extension for the MVVM CommunityToolkit
 
 [![NuGet Version](https://img.shields.io/nuget/v/Blazing.Mvvm.svg)](https://www.nuget.org/packages/Blazing.Mvvm)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/Blazing.Mvvm.svg)](https://www.nuget.org/packages/Blazing.Mvvm)
@@ -6,9 +6,9 @@
 
 🔥 **Blazing.Mvvm** brings full MVVM support to Blazor applications through seamless integration with the [CommunityToolkit.Mvvm](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/). This library supports all Blazor hosting models including Server, WebAssembly (WASM), Static Server-Side Rendering (SSR), Auto, Hybrid (WPF, WinForms, Avalonia), and MAUI. It features strongly-typed ViewModel-first navigation, automatic ViewModel registration and discovery, parameter resolution between Views and ViewModels, validation support with `ObservableValidator`, and comprehensive lifecycle management. The library includes extensive sample projects and complete documentation to help you get started quickly.
 
-## Table of Contents
-
 <!-- TOC -->
+### Table of Contents
+
 - [Blazor Extension for the MVVM CommunityToolkit](#blazor-extension-for-the-mvvm-communitytoolkit)
   - [Table of Contents](#table-of-contents)
   - [Quick Start](#quick-start)
@@ -18,9 +18,9 @@
     - [Configuration](#configuration)
       - [Registering ViewModels in a Different Assembly](#registering-viewmodels-in-a-different-assembly)
     - [Usage](#usage)
-      - [Create a `ViewModel` inheriting the `ViewModelBase` class](#create-a-viewmodel-inheriting-the-viewmodelbase-class)
-      - [Create your Page inheriting the `MvvmComponentBase<TViewModel>` component](#create-your-page-inheriting-the-mvvmcomponentbasetviewmodel-component)
-  - [Give a ⭐](#give-a-)
+      - [Create a ViewModel inheriting the ViewModelBase class](#create-a-viewmodel-inheriting-the-viewmodelbase-class)
+      - [Create your Page inheriting the MvvmComponentBase<TViewModel> component](#create-your-page-inheriting-the-mvvmcomponentbasetviewmodel-component)
+  - [Give a ⭐](#give-a)
   - [Documentation](#documentation)
     - [View Model](#view-model)
       - [Lifecycle Methods](#lifecycle-methods)
@@ -28,17 +28,38 @@
         - [Registering ViewModels with Interfaces or Abstract Classes](#registering-viewmodels-with-interfaces-or-abstract-classes)
         - [Registering Keyed ViewModels](#registering-keyed-viewmodels)
       - [Parameter Resolution](#parameter-resolution)
+      - [Automatic Two-Way Binding](#automatic-two-way-binding)
     - [MVVM Navigation](#mvvm-navigation)
       - [Navigate by abstraction](#navigate-by-abstraction)
     - [MVVM Validation](#mvvm-validation)
     - [Subpath Hosting](#subpath-hosting)
+      - [Automatic Base Path Detection (Recommended)](#automatic-base-path-detection-recommended)
+      - [Standard Subpath Hosting](#standard-subpath-hosting)
+      - [YARP (Yet Another Reverse Proxy) Support](#yarp-yet-another-reverse-proxy-support)
+      - [Legacy Configuration (Backward Compatible)](#legacy-configuration-backward-compatible)
+      - [Configuration Priority](#configuration-priority)
+      - [Working Examples](#working-examples)
+      - [Further Reading](#further-reading)
+    - [Supported Navigation Route Patterns](#supported-navigation-route-patterns)
+      - [Simple Routes](#simple-routes)
+      - [Single Parameter Routes](#single-parameter-routes)
+      - [Multiple Parameter Routes](#multiple-parameter-routes)
+      - [Query String Support](#query-string-support)
+      - [Combined Parameters and Query Strings](#combined-parameters-and-query-strings)
+      - [Complex Multi-Level Routes](#complex-multi-level-routes)
     - [Complex Multi-Project ViewModel Registration](#complex-multi-project-viewmodel-registration)
+      - [Example: Registering ViewModels from Multiple Assemblies](#example-registering-viewmodels-from-multiple-assemblies)
+      - [Alternative Methods](#alternative-methods)
     - [Sample Projects](#sample-projects)
-      - [Running Samples with Different .NET Target Frameworks](#running-samples-with-different-net-target-frameworks)
+      - [Blazor Hosting Model Samples](#blazor-hosting-model-samples)
+      - [Blazor Hybrid Samples](#blazor-hybrid-samples)
+      - [Specialized Samples](#specialized-samples)
+      - [Running Samples with Different .NET Target Frameworks](#running-samples-with-different.net-target-frameworks)
   - [History](#history)
-    - [V3.1.0](#v310)
-    - [V3.0.0](#v300)
-    - [V2.0.0](#v200)
+    - [V3.2.0 - 7 January 2026](#v3.2.0-7-january-2026)
+    - [V3.1.0 - 3 December 2025](#v3.1.0-3-december-2025)
+    - [V3.0.0 - 18 November 2025](#v3.0.0-18-november-2025)
+
 <!-- TOC -->
 
 ## Quick Start
@@ -110,28 +131,34 @@ builder.Services.AddMvvm(options =>
 #### Create a `ViewModel` inheriting the `ViewModelBase` class
 
 ```csharp
-public partial class FetchDataViewModel : ViewModelBase
+[ViewModelDefinition(Lifetime = ServiceLifetime.Scoped)]
+public sealed partial class FetchDataViewModel : ViewModelBase, IDisposable
 {
-    private static readonly string[] Summaries = [
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    ];
+    private readonly IWeatherService _weatherService;
+    private readonly ILogger<FetchDataViewModel> _logger;
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
 
     [ObservableProperty]
-    private ObservableCollection<WeatherForecast> _weatherForecasts = new();
+    private IEnumerable<WeatherForecast>? _weatherForecasts;
 
     public string Title => "Weather forecast";
 
-    public override void OnInitialized()
-        => WeatherForecasts = new ObservableCollection<WeatherForecast>(Get());
-
-    private IEnumerable<WeatherForecast> Get()
+    public FetchDataViewModel(IWeatherService weatherService, ILogger<FetchDataViewModel> logger)
     {
-        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        {
-            Date = DateTime.Now.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        });
+        _weatherService = weatherService;
+        _logger = logger;
+    }
+
+    public override async Task OnInitializedAsync()
+    {
+        WeatherForecasts = await _weatherService.GetForecastAsync() ?? [];
+    }
+
+    public void Dispose()
+    {
+        _logger.LogInformation("Disposing {VMName}.", nameof(FetchDataViewModel));
+        _cancellationTokenSource.Cancel();
+        _cancellationTokenSource.Dispose();
     }
 }
 ```
@@ -148,7 +175,7 @@ public partial class FetchDataViewModel : ViewModelBase
 
 <h1>@ViewModel.Title</h1>
 
-@if (!ViewModel.WeatherForecasts.Any())
+@if (ViewModel.WeatherForecasts is null)
 {
     <p><em>Loading...</em></p>
 }
@@ -300,32 +327,139 @@ public partial class SampleViewModel : ViewModelBase
 {
     [ObservableProperty]
     [property: ViewParameter]
-    private string _title;
+    private string _title = default!;
+
+    [ObservableProperty]
+    [property: ViewParameter("Count")]
+    private int _counter;
 
     [ViewParameter]
-    public int Count { get; set; }
-
-    [ViewParameter("Content")]
-    private string Body { get; set; }
+    public string? Content { get; set; }
 }
 ```
 
 In the `View` component, the parameters should be defined as properties with the `Parameter` attribute:
 
 ```xml
+@page "/sample"
 @inherits MvvmComponentBase<SampleViewModel>
 
 @code {
     [Parameter]
-    public string Title { get; set; }
+    public string Title { get; set; } = default!;
 
     [Parameter]
     public int Count { get; set; }
 
     [Parameter]
-    public string Content { get; set; }
+    public string? Content { get; set; }
 }
 ```
+
+#### Automatic Two-Way Binding
+
+**Added v3.2.0**, Blazing.Mvvm automatically handles two-way binding between View components and ViewModels when using the `@bind-` syntax, eliminating the need for manual `PropertyChanged` event handling.
+
+When a component has:
+- An `EventCallback<T>` parameter following Blazor's `{PropertyName}Changed` naming convention (e.g., `CounterChanged`)
+- A corresponding ViewModel property marked with `[ViewParameter]` (e.g., `Counter`)
+
+The two-way binding is **automatically wired up**. When the ViewModel property changes, the EventCallback is invoked automatically with **zero configuration** and **automatic memory leak prevention**.
+
+**Before (Manual Event Handling):**
+
+*ViewModel:*
+```csharp
+public partial class CounterComponentViewModel : ViewModelBase
+{
+    [ObservableProperty]
+    [property: ViewParameter]
+    private int _counter;
+}
+```
+
+*Component (Required 30+ lines of boilerplate):*
+```razor
+@using System.ComponentModel
+@inherits MvvmComponentBase<CounterComponentViewModel>
+
+<p role="status">Current count: <strong>@ViewModel.Counter</strong></p>
+
+@code {
+    [Parameter]
+    public int Counter { get; set; }
+
+    [Parameter]
+    public EventCallback<int> CounterChanged { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
+    }
+
+    private async void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ViewModel.Counter) && ViewModel.Counter != Counter)
+        {
+            await CounterChanged.InvokeAsync(ViewModel.Counter);
+        }
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            ViewModel.PropertyChanged -= OnViewModelPropertyChanged;
+        }
+        base.Dispose(disposing);
+    }
+}
+```
+
+**After (Automatic Two-Way Binding):**
+
+*ViewModel (unchanged):*
+```csharp
+public partial class CounterComponentViewModel : ViewModelBase
+{
+    [ObservableProperty]
+    [property: ViewParameter]
+    private int _counter;
+}
+```
+
+*Component (Just 9 lines!):*
+```razor
+@inherits MvvmComponentBase<CounterComponentViewModel>
+
+<p role="status">Current count: <strong>@ViewModel.Counter</strong></p>
+
+@code {
+    [Parameter]
+    public int Counter { get; set; }
+
+    [Parameter]
+    public EventCallback<int> CounterChanged { get; set; }
+}
+```
+
+**Usage in Parent Component:**
+```razor
+<CounterComponent @bind-Counter="@ViewModel.Counter" />
+```
+
+**Benefits:**
+- ✅ **Zero Configuration** - No setup required, works automatically
+- ✅ **No Boilerplate** - Eliminates 20+ lines of event handling code per component
+- ✅ **Memory Safe** - Automatic subscription cleanup prevents memory leaks
+- ✅ **Convention-Based** - Follows Blazor's standard `@bind-` naming pattern
+- ✅ **Type-Safe** - Compile-time checking for parameter types
+- ✅ **Works Everywhere** - Supported in `MvvmComponentBase`, `MvvmOwningComponentBase`, and `MvvmLayoutComponentBase`
+
+The feature automatically detects matching EventCallback parameters and wires them up during component initialization, with proper disposal when the component is removed.
+
+> **Working Example:** For a complete working demonstration of Parameter Resolution and Automatic Two-Way Binding, see the **[ParameterResolution.Sample.Wasm](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/ParameterResolution.Sample.Wasm)** sample project.
 
 ### MVVM Navigation
 
@@ -335,7 +469,10 @@ When the `MvvmNavigationManager` is initialized by the IOC container as a Single
 
 When navigation is required, a quick lookup is performed, and the Blazor `NavigationManager` is used to navigate to the correct page. Any relative URI or query string passed via the `NavigateTo` method call is also included.
 
-> **Note:** The `MvvmNavigationManager` class is not a complete replacement for the Blazor `NavigationManager` class; it only adds support for MVVM.
+
+> [!NOTE]
+>
+> The `MvvmNavigationManager` class is not a complete replacement for the Blazor `NavigationManager` class; it only adds support for MVVM.
 
 **Modify the `NavMenu.razor` to use `MvvmNavLink`:**
 
@@ -833,6 +970,123 @@ For more information about ASP.NET Core subpath hosting and YARP configuration, 
 - **[YARP Path Transforms](https://microsoft.github.io/reverse-proxy/articles/transforms.html)** - Path manipulation and header forwarding in YARP
 - **[ASP.NET Core Forwarded Headers](https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer)** - Configuring forwarded headers middleware for reverse proxy scenarios
 
+### Supported Navigation Route Patterns
+
+Blazing.Mvvm supports a comprehensive set of route patterns for flexible navigation in your Blazor applications. All patterns work seamlessly with both type-based navigation (`NavigateTo<TViewModel>`) and keyed navigation (`NavigateTo(key)`).
+
+#### Simple Routes
+
+Navigate to pages with simple, static routes:
+
+```csharp
+// Page with @page "/"
+mvvmNavigationManager.NavigateTo<HomeViewModel>();
+
+// Page with @page "/counter"
+mvvmNavigationManager.NavigateTo<CounterViewModel>();
+
+// Page with @page "/fetchdata"
+mvvmNavigationManager.NavigateTo<FetchDataViewModel>();
+```
+
+#### Single Parameter Routes
+
+Navigate to pages with a single route parameter:
+
+```csharp
+// Page with @page "/users/{userId}"
+mvvmNavigationManager.NavigateTo<UserViewModel>("123");
+// Results in: /users/123
+
+// Page with @page "/products/{productId}"
+mvvmNavigationManager.NavigateTo<ProductViewModel>("abc-456");
+// Results in: /products/abc-456
+```
+
+#### Multiple Parameter Routes
+
+Navigate to pages with two or more route parameters:
+
+```csharp
+// Page with @page "/users/{userId}/posts/{postId}"
+mvvmNavigationManager.NavigateTo<UserPostViewModel>("1/101");
+// Results in: /users/1/posts/101
+
+// Page with @page "/api/{version}/users/{userId}/posts/{postId}"
+mvvmNavigationManager.NavigateTo<ApiUserPostViewModel>("v2/1/101");
+// Results in: /api/v2/users/1/posts/101
+```
+
+**Pattern Rules:**
+- Parameters are separated by forward slashes (`/`)
+- The order of parameters must match the route template
+- Supports any number of route parameters
+
+#### Query String Support
+
+Add query strings to any navigation:
+
+```csharp
+// Simple query string
+mvvmNavigationManager.NavigateTo<ProductsViewModel>("?category=electronics");
+// Results in: /products?category=electronics
+
+// Multiple query parameters
+mvvmNavigationManager.NavigateTo<SearchViewModel>("?query=blazor&sort=relevance&page=1");
+// Results in: /search?query=blazor&sort=relevance&page=1
+```
+
+#### Combined Parameters and Query Strings
+
+Combine route parameters with query strings:
+
+```csharp
+// Single parameter + query string
+// Page with @page "/users/{userId}"
+mvvmNavigationManager.NavigateTo<UserViewModel>("123?tab=profile&edit=true");
+// Results in: /users/123?tab=profile&edit=true
+
+// Multiple parameters + query string
+// Page with @page "/users/{userId}/posts/{postId}"
+mvvmNavigationManager.NavigateTo<UserPostViewModel>("1/101?filter=recent&sort=desc");
+// Results in: /users/1/posts/101?filter=recent&sort=desc
+
+// Complex multi-level route + query string
+// Page with @page "/api/{version}/users/{userId}/posts/{postId}"
+mvvmNavigationManager.NavigateTo<ApiUserPostViewModel>("v2/1/101?include=comments&expand=author");
+// Results in: /api/v2/users/1/posts/101?include=comments&expand=author
+```
+
+#### Complex Multi-Level Routes
+
+Navigate to deeply nested routes with multiple segments:
+
+```csharp
+// Page with @page "/admin/settings/users/{userId}/permissions"
+mvvmNavigationManager.NavigateTo<UserPermissionsViewModel>("123");
+// Results in: /admin/settings/users/123/permissions
+
+// Page with @page "/app/tenant/{tenantId}/workspace/{workspaceId}/project/{projectId}"
+mvvmNavigationManager.NavigateTo<ProjectViewModel>("abc/ws-123/proj-456");
+// Results in: /app/tenant/abc/workspace/ws-123/project/proj-456
+```
+
+**Pattern Rules:**
+- ✅ Route parameters are defined with curly braces: `{paramName}`
+- ✅ Parameters are substituted in order from the `relativeUri` string
+- ✅ Query strings start with `?` and use `&` to separate multiple parameters
+- ✅ URL encoding is handled automatically by the navigation manager
+- ✅ Works with subpath hosting and YARP reverse proxy scenarios
+- ✅ Supports dynamic base path detection (no manual configuration needed)
+
+**Working Examples:**
+
+For complete working examples demonstrating these route patterns, see:
+- **[Blazing.Mvvm.Sample.Server](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.Server)** - User and post management with `/users/{userId}/posts/{postId}` routes
+- **[Blazing.Mvvm.Sample.WebApp](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.WebApp)** - Enhanced with multi-parameter navigation examples
+- **[Blazing.Mvvm.Sample.Wasm](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.Wasm)** - Added complex route pattern demonstrations
+- **[Blazing.Mvvm.Sample.HybridMaui](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.HybridMaui)** - Updated with route parameter examples
+
 ### Complex Multi-Project ViewModel Registration
 
 When working with complex multi-project solutions where ViewModels are distributed across multiple assemblies, you can register all ViewModels from different assemblies using the `RegisterViewModelsFromAssemblyContaining` method in the `AddMvvm` configuration.
@@ -897,10 +1151,10 @@ The repository includes several sample projects demonstrating different Blazor h
 
 #### Blazor Hosting Model Samples
 
-- **[Blazing.Mvvm.Sample.Server](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.Server)** - Blazor Server App sample
-- **[Blazing.Mvvm.Sample.Wasm](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.Wasm)** - Blazor WebAssembly (WASM) App sample
-- **[Blazing.Mvvm.Sample.WebApp](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.WebApp)** - Blazor Web App (.NET 8+) sample
-- **[Blazing.Mvvm.Sample.HybridMaui](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.HybridMaui)** - Blazor Hybrid MAUI sample
+- **[Blazing.Mvvm.Sample.Server](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.Server)** - Blazor Server App sample with user and post management demonstrating complex route patterns
+- **[Blazing.Mvvm.Sample.Wasm](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.Wasm)** - Blazor WebAssembly (WASM) App sample with navigation patterns
+- **[Blazing.Mvvm.Sample.WebApp](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.WebApp)** - Blazor Web App (.NET 8+) sample with query string and parameter navigation
+- **[Blazing.Mvvm.Sample.HybridMaui](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.HybridMaui)** - Blazor Hybrid MAUI sample demonstrating route patterns in mobile applications
 
 #### Blazor Hybrid Samples
 
@@ -916,7 +1170,8 @@ Modernises the Microsoft's [Xamarin Sample](https://github.com/CommunityToolkit/
 #### Specialized Samples
 
 - **[Blazing.SubpathHosting.Server](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.SubpathHosting.Server)** - Demonstrates subpath hosting configuration
-- **[Blazing.Mvvm.ParentChildSample](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/ParentChildSample)** - Demonstrates dynamic parent-child component communication using Messenger. [Original](https://github.com/gragra33/Blazing.Mvvm.ParentChildSample)  repo is now archived.
+- **[ParameterResolution.Sample.Wasm](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/ParameterResolution.Sample.Wasm)** - Demonstrates parameter resolution between Views and ViewModels using `ViewParameter` attribute, and automatic two-way binding with `@bind-` syntax
+- **[Blazing.Mvvm.ParentChildSample](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/ParentChildSample)** - Demonstrates dynamic parent-child component communication using Messenger. [Original](https://github.com/gragra33/Blazing.Mvvm.ParentChildSample) repo is now archived.
 
 #### Running Samples with Different .NET Target Frameworks
 
@@ -931,6 +1186,26 @@ All sample projects in this repository support multi-targeting across .NET 8, .N
 For detailed instructions on switching between .NET target frameworks and troubleshooting multi-targeting scenarios, see the [Running Samples with Different .NET Versions](docs/Running_Different_NET_Versions.md) guide.
 
 ## History
+
+### V3.2.0 - 7 January 2026
+
+This release adds support for:
+  - automatic two-way binding support, eliminating the need for manual PropertyChanged event handling in components. [@gragra33](https://github.com/gragra33)
+  - complex route patterns with multiple parameters and query strings. [@gragra33](https://github.com/gragra33)
+
+**New Features:**
+- **Automatic Two-Way Binding:** Components with `EventCallback<T>` parameters following the `{PropertyName}Changed` convention and corresponding `[ViewParameter]` properties in ViewModels now automatically wire up two-way binding. [@gragra33](https://github.com/gragra33)
+- **Multi-Parameter Route Support:** Full support for routes with multiple parameters (e.g., `/users/{userId}/posts/{postId}`). 
+- **Enhanced Route Parameter Substitution:** Smart substitution of route parameters with proper URL encoding and query string handling. 
+- **Combined Parameters + Query Strings:** Navigate with both route parameters and query strings in a single call (e.g., `1/101?filter=recent&sort=desc`). 
+- **Complex Multi-Level Routes:** Support for deeply nested routes with multiple segments and parameters. 
+
+**New Sample:** 
+- [ParameterResolution.Sample.Wasm](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/ParameterResolution.Sample.Wasm)** - Demonstrates parameter resolution between Views and ViewModels using `ViewParameter` attribute, and automatic two-way binding with `@bind-` syntax
+
+**Updated Samples:**
+- Updated sample projects to demonstrate complex route patterns:
+  - `Blazing.Mvvm.Sample.Server`, `Blazing.Mvvm.Sample.WebApp`, `Blazing.Mvvm.Sample.Wasm`, `Blazing.Mvvm.Sample.HybridMaui`
 
 ### V3.1.0 - 3 December 2025
 
