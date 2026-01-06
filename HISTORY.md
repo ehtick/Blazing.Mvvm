@@ -1,14 +1,28 @@
 ﻿# Version History
 
-### V3.2.0 - TBD
+### V3.2.0 - 6 January 2025
 
-This release adds automatic two-way binding support, eliminating the need for manual PropertyChanged event handling in components.
-
-**New Sample:** 
-- [ParameterResolution.Sample.Wasm](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/ParameterResolution.Sample.Wasm)** - Demonstrates parameter resolution between Views and ViewModels using `ViewParameter` attribute, and automatic two-way binding with `@bind-` syntax
+This release adds comprehensive support for complex route patterns with multiple parameters and query strings. [@gragra33](https://github.com/gragra33)
 
 **New Features:**
-- **Automatic Two-Way Binding:** Components with `EventCallback<T>` parameters following the `{PropertyName}Changed` convention and corresponding `[ViewParameter]` properties in ViewModels now automatically wire up two-way binding. [@gragra33](https://github.com/gragra33)
+- **Multi-Parameter Route Support:** Full support for routes with multiple parameters (e.g., `/users/{userId}/posts/{postId}`). 
+- **Enhanced Route Parameter Substitution:** Smart substitution of route parameters with proper URL encoding and query string handling. 
+- **Combined Parameters + Query Strings:** Navigate with both route parameters and query strings in a single call (e.g., `1/101?filter=recent&sort=desc`). 
+- **Complex Multi-Level Routes:** Support for deeply nested routes with multiple segments and parameters. 
+
+**Improvements:**
+- Added 9 new unit tests for complex route patterns with multiple parameters and query strings (total 879 tests across all frameworks).
+- Enhanced `SubstituteRouteParameters` method to handle multiple parameters and query string separation.
+- Updated sample projects to demonstrate complex route patterns:
+  - `Blazing.Mvvm.Sample.Server`, `Blazing.Mvvm.Sample.WebApp`, `Blazing.Mvvm.Sample.Wasm`, `Blazing.Mvvm.Sample.HybridMaui`
+- Improved documentation with comprehensive route pattern examples and usage guide.
+
+**Route Pattern Examples:**
+- Simple routes: `/counter`, `/fetchdata`
+- Single parameter: `/users/{userId}` with `NavigateTo<UserViewModel>("123")`
+- Multiple parameters: `/users/{userId}/posts/{postId}` with `NavigateTo<UserPostViewModel>("1/101")`
+- With query strings: `/users/{userId}/posts/{postId}` with `NavigateTo<UserPostViewModel>("1/101?filter=recent&sort=desc")`
+- Complex routes: `/api/{version}/users/{userId}/posts/{postId}` with `NavigateTo<ApiUserPostViewModel>("v2/1/101?include=comments")`
 
 ### V3.1.0 - 3 December 2025
 
