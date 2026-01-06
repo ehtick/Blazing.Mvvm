@@ -1,4 +1,26 @@
-﻿# Version History
+# Version History
+<!-- TOC -->
+#### Table of Contents
+
+- [V3.2.0 - 6 January 2025](#v3.2.0-6-january-2025)
+- [V3.2.0 - 7 January 2026](#v3.2.0-7-january-2026)
+- [V3.1.0 - 3 December 2025](#v3.1.0-3-december-2025)
+- [V3.0.0 - 18 November 2025](#v3.0.0-18-november-2025)
+- [V2.2.0 7 December, 2024](#v2.2.0-7-december-2024)
+- [V2.1.1 4 December, 2024](#v2.1.1-4-december-2024)
+- [V2.1.0 3 December, 2024](#v2.1.0-3-december-2024)
+- [V2.0.0 30 November, 2024](#v2.0.0-30-november-2024)
+- [v1.4.0 21 November, 2023](#v1.4.0-21-november-2023)
+- [v1.3.0 (beta) 1 November, 2023](#v1.3.0-beta-1-november-2023)
+- [v1.2.1 1 November, 2023](#v1.2.1-1-november-2023)
+- [26 October, 2023](#october-2023)
+- [v1.1.0 9 October, 2023](#v1.1.0-9-october-2023)
+- [v1.0.2 27 July, 2023](#v1.0.2-27-july-2023)
+- [v1.0.2 25 July, 2023](#v1.0.2-25-july-2023)
+- [v1.0.1 19 May, 2023](#v1.0.1-19-may-2023)
+- [v1.0.0 10 May, 2023-](#v1.0.0-10-may-2023)
+
+<!-- TOC -->
 
 ### V3.2.0 - 6 January 2025
 

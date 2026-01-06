@@ -1,4 +1,4 @@
-﻿# Blazor Extension for the MVVM CommunityToolkit
+# Blazor Extension for the MVVM CommunityToolkit
 
 [![NuGet Version](https://img.shields.io/nuget/v/Blazing.Mvvm.svg)](https://www.nuget.org/packages/Blazing.Mvvm)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/Blazing.Mvvm.svg)](https://www.nuget.org/packages/Blazing.Mvvm)
@@ -6,9 +6,9 @@
 
 🔥 **Blazing.Mvvm** brings full MVVM support to Blazor applications through seamless integration with the [CommunityToolkit.Mvvm](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/). This library supports all Blazor hosting models including Server, WebAssembly (WASM), Static Server-Side Rendering (SSR), Auto, Hybrid (WPF, WinForms, Avalonia), and MAUI. It features strongly-typed ViewModel-first navigation, automatic ViewModel registration and discovery, parameter resolution between Views and ViewModels, validation support with `ObservableValidator`, and comprehensive lifecycle management. The library includes extensive sample projects and complete documentation to help you get started quickly.
 
-## Table of Contents
-
 <!-- TOC -->
+### Table of Contents
+
 - [Blazor Extension for the MVVM CommunityToolkit](#blazor-extension-for-the-mvvm-communitytoolkit)
   - [Table of Contents](#table-of-contents)
   - [Quick Start](#quick-start)
@@ -18,9 +18,9 @@
     - [Configuration](#configuration)
       - [Registering ViewModels in a Different Assembly](#registering-viewmodels-in-a-different-assembly)
     - [Usage](#usage)
-      - [Create a `ViewModel` inheriting the `ViewModelBase` class](#create-a-viewmodel-inheriting-the-viewmodelbase-class)
-      - [Create your Page inheriting the `MvvmComponentBase<TViewModel>` component](#create-your-page-inheriting-the-mvvmcomponentbasetviewmodel-component)
-  - [Give a ⭐](#give-a-)
+      - [Create a ViewModel inheriting the ViewModelBase class](#create-a-viewmodel-inheriting-the-viewmodelbase-class)
+      - [Create your Page inheriting the MvvmComponentBase<TViewModel> component](#create-your-page-inheriting-the-mvvmcomponentbasetviewmodel-component)
+  - [Give a ⭐](#give-a)
   - [Documentation](#documentation)
     - [View Model](#view-model)
       - [Lifecycle Methods](#lifecycle-methods)
@@ -33,6 +33,13 @@
       - [Navigate by abstraction](#navigate-by-abstraction)
     - [MVVM Validation](#mvvm-validation)
     - [Subpath Hosting](#subpath-hosting)
+      - [Automatic Base Path Detection (Recommended)](#automatic-base-path-detection-recommended)
+      - [Standard Subpath Hosting](#standard-subpath-hosting)
+      - [YARP (Yet Another Reverse Proxy) Support](#yarp-yet-another-reverse-proxy-support)
+      - [Legacy Configuration (Backward Compatible)](#legacy-configuration-backward-compatible)
+      - [Configuration Priority](#configuration-priority)
+      - [Working Examples](#working-examples)
+      - [Further Reading](#further-reading)
     - [Supported Navigation Route Patterns](#supported-navigation-route-patterns)
       - [Simple Routes](#simple-routes)
       - [Single Parameter Routes](#single-parameter-routes)
@@ -41,13 +48,18 @@
       - [Combined Parameters and Query Strings](#combined-parameters-and-query-strings)
       - [Complex Multi-Level Routes](#complex-multi-level-routes)
     - [Complex Multi-Project ViewModel Registration](#complex-multi-project-viewmodel-registration)
+      - [Example: Registering ViewModels from Multiple Assemblies](#example-registering-viewmodels-from-multiple-assemblies)
+      - [Alternative Methods](#alternative-methods)
     - [Sample Projects](#sample-projects)
-      - [Running Samples with Different .NET Target Frameworks](#running-samples-with-different-net-target-frameworks)
+      - [Blazor Hosting Model Samples](#blazor-hosting-model-samples)
+      - [Blazor Hybrid Samples](#blazor-hybrid-samples)
+      - [Specialized Samples](#specialized-samples)
+      - [Running Samples with Different .NET Target Frameworks](#running-samples-with-different.net-target-frameworks)
   - [History](#history)
-    - [V3.2.0](#v320)
-    - [V3.1.0](#v310)
-    - [V3.0.0](#v300)
-    - [V2.0.0](#v200)
+    - [V3.2.0 - 7 January 2026](#v3.2.0-7-january-2026)
+    - [V3.1.0 - 3 December 2025](#v3.1.0-3-december-2025)
+    - [V3.0.0 - 18 November 2025](#v3.0.0-18-november-2025)
+
 <!-- TOC -->
 
 ## Quick Start
@@ -457,7 +469,10 @@ When the `MvvmNavigationManager` is initialized by the IOC container as a Single
 
 When navigation is required, a quick lookup is performed, and the Blazor `NavigationManager` is used to navigate to the correct page. Any relative URI or query string passed via the `NavigateTo` method call is also included.
 
-> **Note:** The `MvvmNavigationManager` class is not a complete replacement for the Blazor `NavigationManager` class; it only adds support for MVVM.
+
+> [!NOTE]
+>
+> The `MvvmNavigationManager` class is not a complete replacement for the Blazor `NavigationManager` class; it only adds support for MVVM.
 
 **Modify the `NavMenu.razor` to use `MvvmNavLink`:**
 
