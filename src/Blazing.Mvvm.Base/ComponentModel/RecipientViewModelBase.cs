@@ -7,7 +7,7 @@ namespace Blazing.Mvvm.ComponentModel;
 /// Provides a base class for ViewModels that implement <see cref="ObservableRecipient"/>, supporting message reception and access to <see cref="IMessenger"/>.
 /// Implements <see cref="IViewModelBase"/> for Blazor MVVM lifecycle integration and <see cref="IDisposable"/> for resource cleanup.
 /// </summary>
-public abstract class RecipientViewModelBase : ObservableRecipient, IViewModelBase, IDisposable
+public abstract class RecipientViewModelBase : ObservableRecipient, IViewModelBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="RecipientViewModelBase"/> class.
