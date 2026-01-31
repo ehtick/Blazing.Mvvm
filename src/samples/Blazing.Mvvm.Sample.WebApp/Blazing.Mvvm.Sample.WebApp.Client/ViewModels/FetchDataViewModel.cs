@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components;
 namespace Blazing.Mvvm.Sample.WebApp.Client.ViewModels;
 
 [ViewModelDefinition(Lifetime = ServiceLifetime.Scoped)]
-public sealed partial class FetchDataViewModel : ViewModelBase, IDisposable
+public sealed partial class FetchDataViewModel : ViewModelBase
 {
     private readonly IWeatherService _weatherService;
     private readonly ILogger<FetchDataViewModel> _logger;
@@ -40,10 +40,15 @@ public sealed partial class FetchDataViewModel : ViewModelBase, IDisposable
         }
     }
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _logger.LogInformation("Disposing {VMName}.", nameof(FetchDataViewModel));
-        _cancellationTokenSource.Cancel();
-        _cancellationTokenSource.Dispose();
+        if (disposing)
+        {
+            _logger.LogInformation("Disposing {VMName}.", GetType().Name);
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }

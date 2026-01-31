@@ -24,7 +24,6 @@ public abstract partial class TestKeyedNavigationBaseViewModel : ViewModelBase, 
     internal readonly NavigationManager NavigationManager;
 
     private RelayCommand? _keyedTestNavigateCommand;
-    private bool isDisposed;
 
     /// <summary>
     /// Backing field for the keyed navigation command with parameters.
@@ -80,31 +79,17 @@ public abstract partial class TestKeyedNavigationBaseViewModel : ViewModelBase, 
         => ProcessQueryString();
 
     /// <summary>
-    /// Disposes the view model and detaches navigation event handlers.
-    /// </summary>
-    public void Dispose()
-    {
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
     /// Disposes resources used by the view model.
     /// </summary>
     /// <param name="disposing">True if called from <see cref="Dispose()"/>; otherwise, false.</param>
-    protected virtual void Dispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
-        if (isDisposed)
-        {
-            return;
-        }
-
         if (disposing)
         {
             NavigationManager.LocationChanged -= OnLocationChanged;
         }
 
-        isDisposed = true;
+        base.Dispose(disposing);
     }
 
     /// <summary>

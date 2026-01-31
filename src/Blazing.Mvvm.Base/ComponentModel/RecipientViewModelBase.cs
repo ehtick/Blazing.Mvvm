@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 
 namespace Blazing.Mvvm.ComponentModel;
@@ -10,18 +12,27 @@ namespace Blazing.Mvvm.ComponentModel;
 public abstract class RecipientViewModelBase : ObservableRecipient, IViewModelBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="RecipientViewModelBase"/> class.
+    /// Initializes a new instance of the <see cref="RecipientViewModelBase"/> class and subscribes to command property changes.
     /// </summary>
     protected RecipientViewModelBase()
-    { /* skip */ }
+    {
+        CommandPropertyChanged();
+    }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RecipientViewModelBase"/> class with the specified <see cref="IMessenger"/>.
+    /// Initializes a new instance of the <see cref="RecipientViewModelBase"/> class with the specified <see cref="IMessenger"/> and subscribes to command property changes.
     /// </summary>
     /// <param name="messenger">The messenger instance for message delivery.</param>
     protected RecipientViewModelBase(IMessenger messenger)
         : base(messenger)
-    { /* skip */ }
+    {
+        CommandPropertyChanged();
+    }
+
+    /// <summary>
+    /// Stores the set of <see cref="IAsyncRelayCommand"/> instances that have been subscribed to property change notifications.
+    /// </summary>
+    private readonly HashSet<IAsyncRelayCommand> _subscribedCommands = [];
 
     private bool IsDisposed;
 
@@ -61,6 +72,37 @@ public abstract class RecipientViewModelBase : ObservableRecipient, IViewModelBa
         => OnPropertyChanged();
 
     /// <summary>
+    /// Subscribes to property changes for all <see cref="IAsyncRelayCommand"/> properties on this instance.
+    /// </summary>
+    private void CommandPropertyChanged()
+    {
+        foreach (var prop in GetType().GetProperties())
+        {
+            if (typeof(IAsyncRelayCommand).IsAssignableFrom(prop.PropertyType))
+            {
+                IAsyncRelayCommand? command = (IAsyncRelayCommand?)prop.GetValue(this);
+                if (command != null && _subscribedCommands.Add(command))
+                {
+                    command.PropertyChanged += CommandPropertyChanged;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Handles property changes for subscribed <see cref="IAsyncRelayCommand"/> instances.
+    /// </summary>
+    /// <param name="sender">The command that raised the event.</param>
+    /// <param name="e">The event data.</param>
+    protected virtual void CommandPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(AsyncRelayCommand.IsRunning))
+        {
+            NotifyStateChanged();
+        }
+    }
+
+    /// <summary>
     /// Releases the unmanaged resources used by the <see cref="RecipientViewModelBase"/> and optionally releases the managed resources.
     /// </summary>
     /// <param name="disposing">True to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
@@ -75,6 +117,13 @@ public abstract class RecipientViewModelBase : ObservableRecipient, IViewModelBa
         {
             ObservableRecipient observableRecipient = this;
             observableRecipient.IsActive = false;
+
+            // Unsubscribing from all command property change notifications.
+            foreach (var command in _subscribedCommands)
+            {
+                command.PropertyChanged -= CommandPropertyChanged;
+            }
+            _subscribedCommands.Clear();
         }
         IsDisposed = true;
     }

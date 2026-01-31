@@ -26,10 +26,15 @@ public sealed partial class FetchDataViewModel : ViewModelBase, IDisposable
         WeatherForecasts = await _weatherService.GetForecastAsync() ?? [];
     }
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _logger.LogInformation("Disposing {VMName}.", nameof(FetchDataViewModel));
-        _cancellationTokenSource.Cancel();
-        _cancellationTokenSource.Dispose();
+        if (disposing)
+        {
+            _logger.LogInformation("Disposing {VMName}.", GetType().Name);
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 }

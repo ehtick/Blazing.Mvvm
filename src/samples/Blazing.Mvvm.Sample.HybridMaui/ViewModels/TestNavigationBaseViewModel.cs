@@ -14,7 +14,6 @@ public abstract partial class TestNavigationBaseViewModel : ViewModelBase, ITest
     internal readonly NavigationManager NavigationManager;
 
     private RelayCommand? _hexTranslateNavigateCommand;
-    private bool isDisposed;
 
     internal RelayCommand<string>? TestNavigateCommandImpl;
 
@@ -43,25 +42,14 @@ public abstract partial class TestNavigationBaseViewModel : ViewModelBase, ITest
     public override void OnInitialized()
         => ProcessQueryString();
 
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (isDisposed)
-        {
-            return;
-        }
-
         if (disposing)
         {
             NavigationManager.LocationChanged -= OnLocationChanged;
         }
 
-        isDisposed = true;
+        base.Dispose(disposing);
     }
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)

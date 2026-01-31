@@ -14,7 +14,7 @@ namespace ParameterResolution.Sample.Wasm.ViewModels;
 /// It is registered as a Singleton to maintain state across all pages.
 /// </remarks>
 [ViewModelDefinition(Lifetime = ServiceLifetime.Singleton)]
-public sealed partial class MainLayoutViewModel : ViewModelBase, IDisposable
+public sealed partial class MainLayoutViewModel : ViewModelBase
 {
     private readonly NavigationManager _navigationManager;
 
@@ -38,19 +38,20 @@ public sealed partial class MainLayoutViewModel : ViewModelBase, IDisposable
     }
 
     /// <summary>
-    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-    /// </summary>
-    /// <remarks>
-    /// Unsubscribes from the <see cref="NavigationManager.LocationChanged"/> event to prevent memory leaks.
-    /// </remarks>
-    public void Dispose()
-        => _navigationManager.LocationChanged -= OnLocationChanged;
-
-    /// <summary>
     /// Handles the location changed event from the navigation manager.
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The event data containing information about the navigation.</param>
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
         => Counter++;
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _navigationManager.LocationChanged -= OnLocationChanged;
+        }
+
+        base.Dispose(disposing);
+    }
 }
