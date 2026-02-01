@@ -1,5 +1,5 @@
-using Blazing.Mvvm.Sample.WebApp.Client.Data;
-using Blazing.Mvvm.Sample.WebApp.Client.Models;
+using Blazing.Mvvm.Sample.Shared.Models;
+using Blazing.Mvvm.Sample.Shared.Services;
 
 namespace Blazing.Mvvm.Sample.WebApp.Data;
 

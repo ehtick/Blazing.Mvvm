@@ -1,8 +1,11 @@
-using Blazing.Mvvm.Sample.WebApp.Client.Data;
-using Blazing.Mvvm.Sample.WebApp.Client.Models;
+using Blazing.Mvvm.Sample.Shared.Data;
+using Blazing.Mvvm.Sample.Shared.Models;
 
 namespace Blazing.Mvvm.Sample.WebApp.Data;
 
+/// <summary>
+/// Server-side implementation of the weather service.
+/// </summary>
 public class ServerWeatherService : IWeatherService
 {
     private static readonly string[] Summaries =

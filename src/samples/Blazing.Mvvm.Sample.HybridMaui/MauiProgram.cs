@@ -1,4 +1,6 @@
-﻿using Blazing.Mvvm.Sample.HybridMaui.Services;
+﻿using Blazing.Mvvm.Sample.HybridMaui.Data;
+using Blazing.Mvvm.Sample.Shared.Data;
+using Blazing.Mvvm.Sample.Shared.Services;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
 
@@ -22,6 +24,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IMessenger>(_ => WeakReferenceMessenger.Default);
     
         // Add application services
+        builder.Services.AddScoped<IWeatherService, WeatherService>();
         builder.Services.AddScoped<IUsersService, UsersService>();
         builder.Services.AddScoped<IPostsService, PostsService>();
 
@@ -29,6 +32,9 @@ public static class MauiProgram
         { 
             options.ParameterResolutionMode = ParameterResolutionMode.ViewAndViewModel;
             options.HostingModelType = BlazorHostingModelType.HybridMaui;
+            
+            // Register Shared ViewModels
+            options.RegisterViewModelsFromAssembly(typeof(Blazing.Mvvm.Sample.Shared.ViewModels.MainLayoutViewModel).Assembly);
         });            
 
 #if DEBUG

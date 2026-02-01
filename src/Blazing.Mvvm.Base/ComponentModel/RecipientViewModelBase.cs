@@ -80,10 +80,10 @@ public abstract class RecipientViewModelBase : ObservableRecipient, IViewModelBa
         {
             if (typeof(IAsyncRelayCommand).IsAssignableFrom(prop.PropertyType))
             {
-                IAsyncRelayCommand? command = (IAsyncRelayCommand?)prop.GetValue(this);
-                if (command != null && _subscribedCommands.Add(command))
+                var command = prop.GetValue(this);
+                if (command is INotifyPropertyChanged notifyCommand && _subscribedCommands.Add((IAsyncRelayCommand)command))
                 {
-                    command.PropertyChanged += CommandPropertyChanged;
+                    notifyCommand.PropertyChanged += CommandPropertyChanged;
                 }
             }
         }

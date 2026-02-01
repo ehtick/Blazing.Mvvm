@@ -1,6 +1,7 @@
 using Blazing.Mvvm;
 using Blazing.Mvvm.Sample.Server.Data;
-using Blazing.Mvvm.Sample.Server.Services;
+using Blazing.Mvvm.Sample.Shared.Data;
+using Blazing.Mvvm.Sample.Shared.Services;
 using CommunityToolkit.Mvvm.Messaging;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,9 @@ builder.Services.AddMvvm(options =>
 {
     options.HostingModelType = BlazorHostingModelType.Server;
     options.ParameterResolutionMode = ParameterResolutionMode.ViewAndViewModel;
+    
+    // Register ViewModels from the Shared assembly
+    options.RegisterViewModelsFromAssembly(typeof(Blazing.Mvvm.Sample.Shared.ViewModels.MainLayoutViewModel).Assembly);
 });
 
 #if DEBUG

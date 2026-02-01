@@ -1,6 +1,8 @@
 using Blazing.Mvvm;
 using Blazing.Mvvm.Sample.Wasm;
-using Blazing.Mvvm.Sample.Wasm.Services;
+using Blazing.Mvvm.Sample.Wasm.Data;
+using Blazing.Mvvm.Sample.Shared.Data;
+using Blazing.Mvvm.Sample.Shared.Services;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -13,11 +15,19 @@ builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.H
 builder.Services.AddSingleton<IMessenger>(_ => WeakReferenceMessenger.Default);
 
 // Add application services
+builder.Services.AddScoped<IWeatherService, WeatherService>();
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IPostsService, PostsService>();
 
 // Add Blazing.Mvvm
-builder.Services.AddMvvm(options => options.ParameterResolutionMode = ParameterResolutionMode.ViewAndViewModel);
+builder.Services.AddMvvm(options =>
+{
+    options.HostingModelType = BlazorHostingModelType.WebAssembly;
+    options.ParameterResolutionMode = ParameterResolutionMode.ViewAndViewModel;
+    
+    // Register Shared ViewModels
+    options.RegisterViewModelsFromAssembly(typeof(Blazing.Mvvm.Sample.Shared.ViewModels.MainLayoutViewModel).Assembly);
+});
 
 #if DEBUG
 builder.Logging.SetMinimumLevel(LogLevel.Debug);
