@@ -1,5 +1,7 @@
 using Blazing.Mvvm.ComponentModel;
 using Blazing.Mvvm.Components;
+using Blazing.Mvvm.Sample.Shared.ViewModels.ParameterResolution;
+using Blazing.Mvvm.Sample.Shared.ViewModels.ParentChild;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,6 +48,15 @@ public sealed partial class SampleAppInfoViewModel : ViewModelBase
                 break;
             case "fetchdata":
                 _mvvmNavigationManager.NavigateTo<FetchDataViewModel>();
+                break;
+            case "paramresoverview": 
+                _mvvmNavigationManager.NavigateTo<ParameterResolutionOverviewViewModel>();
+                break;
+            case "parameterresolution":
+                _mvvmNavigationManager.NavigateTo<ParameterDemoViewModel>();
+                break;
+            case "parentchild":
+                _mvvmNavigationManager.NavigateTo<ParentChildViewModel>();
                 break;
         }
     }

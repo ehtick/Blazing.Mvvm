@@ -4,17 +4,7 @@
 
 <PageTitle>User Posts</PageTitle>
 
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-            <button class="btn btn-link p-0" @onclick="ViewModel.BackToUsersCommand.Execute">Users</button>
-        </li>
-        <li class="breadcrumb-item">
-            <button class="btn btn-link p-0" @onclick="ViewModel.BackToUserCommand.Execute">@(ViewModel.User?.Name ?? UserId)</button>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">Posts</li>
-    </ol>
-</nav>
+<BootstrapBreadcrumbs CustomLabels="@GetBreadcrumbLabels()" />
 
 @* Debug Information *@
 <div class="alert alert-info mb-3">
@@ -86,4 +76,14 @@ else if (ViewModel.User != null)
 @code {
     [Parameter]
     public string? UserId { get; set; }
+
+    private Dictionary<string, string> GetBreadcrumbLabels()
+    {
+        return new()
+        {
+            ["users"] = "Users",
+            [UserId ?? ""] = ViewModel.User?.Name ?? $"User {UserId}",
+            ["posts"] = "Posts"
+        };
+    }
 }
