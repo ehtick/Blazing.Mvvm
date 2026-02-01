@@ -1,6 +1,6 @@
+using Blazing.Common;
 using Blazing.Mvvm.ComponentModel;
 using Blazing.Mvvm.Components;
-using Blazing.Mvvm.Sample.Shared.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.AspNetCore.Components;

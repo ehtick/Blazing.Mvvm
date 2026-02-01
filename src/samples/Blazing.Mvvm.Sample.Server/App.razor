@@ -1,12 +1,10 @@
-﻿@using Blazing.Mvvm.Sample.Shared.Pages
-@using Blazing.Mvvm.Sample.Shared.Layout
-
-<Router AppAssembly="@typeof(App).Assembly"
+﻿<Router AppAssembly="@typeof(App).Assembly"
         AdditionalAssemblies="@(new[] { typeof(Blazing.Mvvm.Sample.Shared.Pages.Index).Assembly })">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
     </Found>
+    <!-- old NotFound use for .Net8.0 backwards compatibility -->
     <NotFound>
         <PageTitle>Not found</PageTitle>
         <LayoutView Layout="@typeof(MainLayout)">

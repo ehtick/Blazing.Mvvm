@@ -3,6 +3,7 @@ using Blazing.Mvvm.Sample.Wasm;
 using Blazing.Mvvm.Sample.Wasm.Data;
 using Blazing.Mvvm.Sample.Shared.Data;
 using Blazing.Mvvm.Sample.Shared.Services;
+using Blazing.Mvvm.Sample.Shared.ViewModels;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -26,7 +27,7 @@ builder.Services.AddMvvm(options =>
     options.ParameterResolutionMode = ParameterResolutionMode.ViewAndViewModel;
     
     // Register Shared ViewModels
-    options.RegisterViewModelsFromAssembly(typeof(Blazing.Mvvm.Sample.Shared.ViewModels.MainLayoutViewModel).Assembly);
+    options.RegisterViewModelsFromAssembly(typeof(MainLayoutViewModel).Assembly);
 });
 
 #if DEBUG

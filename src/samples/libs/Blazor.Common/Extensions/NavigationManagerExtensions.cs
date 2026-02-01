@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Primitives;
 
-namespace Blazing.Mvvm.Sample.Shared.Extensions;
+namespace Blazing.Common;
 
 // ref: https://chrissainty.com/working-with-query-strings-in-blazor/
 public static class NavigationManagerExtensions

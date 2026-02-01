@@ -1,8 +1,5 @@
-﻿@using Blazing.Mvvm.Sample.Shared.Pages
-@using Blazing.Mvvm.Sample.Shared.Layout
-
-<Router AppAssembly="@typeof(Program).Assembly"
-        AdditionalAssemblies="@(new[] { typeof(Blazing.Mvvm.Sample.Shared.Pages.Index).Assembly })">
+﻿<Router AppAssembly="@typeof(Program).Assembly"
+        AdditionalAssemblies="@(new[] { typeof(Shared.Pages.Index).Assembly })">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
