@@ -17,7 +17,7 @@
     </Body>
     <Footer>
         <ConditionalSwitch>
-            <When Predicate="@(() => _isBusy)">
+            <When Condition="@(() => _isBusy)">
                 <div class="progress mt-2" role="progressbar" aria-label="Animated striped example" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
                     <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" style="width: 100%"></div>
                 </div>

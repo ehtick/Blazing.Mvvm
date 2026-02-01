@@ -36,7 +36,7 @@ public partial class ConditionalSwitch : ComponentBase
     private void UpdateRenderFragment()
     {
         // Find first matching When case by invoking predicates
-        var matchingCase = _whenCases.FirstOrDefault(w => w.Predicate());
+        var matchingCase = _whenCases.FirstOrDefault(w => w.Condition());
         if (matchingCase != null)
         {
             _renderFragment = matchingCase.ChildContent;

@@ -6,10 +6,10 @@ namespace Blazing.Common.Components;
 public class When : ComponentBase
 {
     /// <summary>
-    /// Predicate function to evaluate the condition.
+    /// Condition function to evaluate the condition.
     /// </summary>
     [Parameter]
-    public Func<bool> Predicate { get; set; } = () => false;
+    public Func<bool> Condition { get; set; } = () => false;
 
     /// <summary>
     /// Content to render when predicate returns true.
