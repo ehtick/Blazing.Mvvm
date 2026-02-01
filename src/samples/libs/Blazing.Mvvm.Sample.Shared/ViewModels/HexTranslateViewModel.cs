@@ -1,11 +1,12 @@
 using Blazing.Mvvm.ComponentModel;
 using Blazing.Mvvm.Sample.Shared.Models;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 
 namespace Blazing.Mvvm.Sample.Shared.ViewModels;
 
 [ViewModelDefinition(Key = nameof(HexTranslateViewModel))]
-public sealed class HexTranslateViewModel : ViewModelBase
+public partial class HexTranslateViewModel : ViewModelBase
 {
     private readonly IMessenger _messenger;
 
@@ -14,6 +15,7 @@ public sealed class HexTranslateViewModel : ViewModelBase
         _messenger = messenger;
     }
 
+    [RelayCommand]
     public void ResetChildInputs()
         => _messenger.Send(new ResetHexAsciiInputsMessage());
 }

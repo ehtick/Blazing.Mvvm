@@ -33,14 +33,14 @@
     </div>
 
     <hr class="my-4">
-
-    <div class="row">
-        <button class="btn btn-primary btn-lg col"
+    
+    <div class="d-flex justify-content-center gap-3 mb-4">
+        <button class="btn btn-primary btn-lg  col-md-2"
                 type="submit"
                 disabled="@ViewModel.Contact.HasErrors">
-        Save
+            Save
         </button>
-        <button class="btn btn-secondary btn-lg col"
+        <button class="btn btn-secondary btn-lg  col-md-2"
                 type="button" @onclick="ViewModel.ClearFormCommand.Execute">
             Clear Form
         </button>
