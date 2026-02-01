@@ -86,43 +86,43 @@ This implementation demonstrates route parameter substitution in the Blazing.Mvv
 ## Design Principles Applied
 
 ### DRY (Don't Repeat Yourself)
-- ? Centralized data in services
-- ? Reusable navigation commands
-- ? Shared models across ViewModels
+-  Centralized data in services
+-  Reusable navigation commands
+-  Shared models across ViewModels
 
 ### KISS (Keep It Simple, Stupid)
-- ? Simple service interfaces
-- ? Clear ViewModel responsibilities
-- ? Straightforward navigation flow
+-  Simple service interfaces
+-  Clear ViewModel responsibilities
+-  Straightforward navigation flow
 
 ### SOLID Principles
 
 #### Single Responsibility
-- ? Each service handles one entity
-- ? Each ViewModel handles one view
-- ? Each page displays one concept
+-  Each service handles one entity
+-  Each ViewModel handles one view
+-  Each page displays one concept
 
 #### Open/Closed
-- ? Services can be extended without modification
-- ? New ViewModels can be added without changing existing ones
+-  Services can be extended without modification
+-  New ViewModels can be added without changing existing ones
 
 #### Liskov Substitution
-- ? Service implementations can be swapped
-- ? Mock services can replace real ones for testing
+-  Service implementations can be swapped
+-  Mock services can replace real ones for testing
 
 #### Interface Segregation
-- ? Small, focused interfaces (IUsersService, IPostsService)
-- ? No fat interfaces forcing unnecessary implementations
+-  Small, focused interfaces (IUsersService, IPostsService)
+-  No fat interfaces forcing unnecessary implementations
 
 #### Dependency Inversion
-- ? ViewModels depend on service abstractions, not implementations
-- ? Dependency injection throughout
+-  ViewModels depend on service abstractions, not implementations
+-  Dependency injection throughout
 
 ### MVVM Pattern
-- ? **Model**: User, Post entities
-- ? **View**: Razor pages (.razor files)
-- ? **ViewModel**: *ViewModel classes with commands and properties
-- ? **Services**: Data access abstraction
+-  **Model**: User, Post entities
+-  **View**: Razor pages (.razor files)
+-  **ViewModel**: *ViewModel classes with commands and properties
+-  **Services**: Data access abstraction
 
 ## Sample Data
 

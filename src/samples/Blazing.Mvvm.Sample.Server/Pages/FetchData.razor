@@ -1,11 +1,11 @@
 ﻿@page "/fetchdata"
 @inherits MvvmOwningComponentBase<FetchDataViewModel>
 
-<PageTitle>Weather forecast</PageTitle>
+<PageTitle>Weather Forecast - Data & Services Sample</PageTitle>
 
-<h1>Weather forecast</h1>
+<h1>Weather Forecast</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
+<FetchDataInfo />
 
 @if (ViewModel.WeatherForecasts is null)
 {

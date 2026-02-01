@@ -1,6 +1,12 @@
 ﻿@page "/form"
 @inherits MvvmComponentBase<EditContactViewModel>
 
+<PageTitle>Form Validation Sample</PageTitle>
+
+<h1>Form Validation</h1>
+
+<FormInfo />
+
 <EditForm Model="ViewModel.Contact" FormName="EditContact" OnValidSubmit="ViewModel.SaveCommand.Execute">
     <MvvmObservableValidator />
     <ValidationSummary aria-label="validation summary" />
