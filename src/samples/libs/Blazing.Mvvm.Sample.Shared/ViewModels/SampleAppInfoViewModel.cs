@@ -8,18 +8,30 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Blazing.Mvvm.Sample.Shared.ViewModels;
 
+/// <summary>
+/// ViewModel for the sample application info, providing navigation logic to various pages and view models.
+/// </summary>
 [ViewModelDefinition(Lifetime = ServiceLifetime.Scoped)]
 public sealed partial class SampleAppInfoViewModel : ViewModelBase
 {
     private readonly IMvvmNavigationManager _mvvmNavigationManager;
     private readonly NavigationManager _navigationManager;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SampleAppInfoViewModel"/> class.
+    /// </summary>
+    /// <param name="mvvmNavigationManager">The MVVM navigation manager for view model-based navigation.</param>
+    /// <param name="navigationManager">The Blazor navigation manager for URL-based navigation.</param>
     public SampleAppInfoViewModel(IMvvmNavigationManager mvvmNavigationManager, NavigationManager navigationManager)
     {
         _mvvmNavigationManager = mvvmNavigationManager;
         _navigationManager = navigationManager;
     }
 
+    /// <summary>
+    /// Navigates to the specified page or view model based on the provided page key.
+    /// </summary>
+    /// <param name="page">The page key or identifier to navigate to.</param>
     [RelayCommand]
     private void Navigation(string? page)
     {

@@ -11,6 +11,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Blazing.Mvvm.Sample.Shared.ViewModels;
 
+/// <summary>
+/// ViewModel for displaying a specific user's post, handling loading, navigation, and error states.
+/// </summary>
 [ViewModelDefinition(Lifetime = ServiceLifetime.Scoped)]
 public sealed partial class UserPostViewModel : ViewModelBase
 {
@@ -19,24 +22,49 @@ public sealed partial class UserPostViewModel : ViewModelBase
     private readonly IUsersService _usersService;
     private readonly IPostsService _postsService;
 
+    /// <summary>
+    /// Gets or sets the user whose post is being displayed.
+    /// </summary>
     [ObservableProperty]
     private User? _user;
 
+    /// <summary>
+    /// Gets or sets the post being displayed.
+    /// </summary>
     [ObservableProperty]
     private Post? _post;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the post is currently loading.
+    /// </summary>
     [ObservableProperty]
     private bool _isLoading;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the post was not found.
+    /// </summary>
     [ObservableProperty]
     private bool _postNotFound;
 
+    /// <summary>
+    /// Gets or sets the user ID parameter from the view.
+    /// </summary>
     [ViewParameter]
     public string? UserId { get; set; }
 
+    /// <summary>
+    /// Gets or sets the post ID parameter from the view.
+    /// </summary>
     [ViewParameter]
     public string? PostId { get; set; }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UserPostViewModel"/> class.
+    /// </summary>
+    /// <param name="logger">The logger instance for logging events.</param>
+    /// <param name="navigationManager">The navigation manager for view model navigation.</param>
+    /// <param name="usersService">The service for retrieving user data.</param>
+    /// <param name="postsService">The service for retrieving post data.</param>
     public UserPostViewModel(
         ILogger<UserPostViewModel> logger, 
         IMvvmNavigationManager navigationManager,
@@ -49,6 +77,9 @@ public sealed partial class UserPostViewModel : ViewModelBase
         _postsService = postsService;
     }
 
+    /// <summary>
+    /// Called when component parameters are set. Loads the post data if user and post IDs are provided.
+    /// </summary>
     public override async Task OnParametersSetAsync()
     {
         if (!string.IsNullOrEmpty(UserId) && !string.IsNullOrEmpty(PostId))
@@ -57,6 +88,11 @@ public sealed partial class UserPostViewModel : ViewModelBase
         }
     }
 
+    /// <summary>
+    /// Loads the user and post data asynchronously.
+    /// </summary>
+    /// <param name="userId">The user ID to load data for.</param>
+    /// <param name="postId">The post ID to load data for.</param>
     private async Task LoadPostDataAsync(string userId, string postId)
     {
         try
@@ -99,6 +135,9 @@ public sealed partial class UserPostViewModel : ViewModelBase
         }
     }
 
+    /// <summary>
+    /// Navigates back to the posts list for the current user.
+    /// </summary>
     [RelayCommand]
     private void BackToPosts()
     {
@@ -109,6 +148,9 @@ public sealed partial class UserPostViewModel : ViewModelBase
         }
     }
 
+    /// <summary>
+    /// Navigates back to the user details view for the current user.
+    /// </summary>
     [RelayCommand]
     private void BackToUser()
     {
@@ -119,6 +161,9 @@ public sealed partial class UserPostViewModel : ViewModelBase
         }
     }
 
+    /// <summary>
+    /// Navigates back to the users list view.
+    /// </summary>
     [RelayCommand]
     private void BackToUsers()
     {

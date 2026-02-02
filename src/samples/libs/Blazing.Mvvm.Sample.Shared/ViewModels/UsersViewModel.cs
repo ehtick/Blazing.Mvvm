@@ -9,6 +9,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Blazing.Mvvm.Sample.Shared.ViewModels;
 
+/// <summary>
+/// ViewModel for displaying and managing a list of users, including loading and navigation logic.
+/// </summary>
 [ViewModelDefinition(Lifetime = ServiceLifetime.Scoped)]
 public sealed partial class UsersViewModel : ViewModelBase
 {
@@ -16,12 +19,24 @@ public sealed partial class UsersViewModel : ViewModelBase
     private readonly IMvvmNavigationManager _navigationManager;
     private readonly IUsersService _usersService;
 
+    /// <summary>
+    /// Gets or sets the list of users.
+    /// </summary>
     [ObservableProperty]
     private List<User> _users = [];
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the users are currently loading.
+    /// </summary>
     [ObservableProperty]
     private bool _isLoading;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UsersViewModel"/> class.
+    /// </summary>
+    /// <param name="logger">The logger instance for logging events.</param>
+    /// <param name="navigationManager">The navigation manager for view model navigation.</param>
+    /// <param name="usersService">The service for retrieving user data.</param>
     public UsersViewModel(
         ILogger<UsersViewModel> logger,
         IMvvmNavigationManager navigationManager,
@@ -32,11 +47,17 @@ public sealed partial class UsersViewModel : ViewModelBase
         _usersService = usersService;
     }
 
+    /// <summary>
+    /// Called when the ViewModel is initialized. Loads the list of users.
+    /// </summary>
     public override async Task OnInitializedAsync()
     {
         await LoadUsersAsync();
     }
 
+    /// <summary>
+    /// Loads the list of users asynchronously.
+    /// </summary>
     private async Task LoadUsersAsync()
     {
         try
@@ -56,6 +77,10 @@ public sealed partial class UsersViewModel : ViewModelBase
         }
     }
 
+    /// <summary>
+    /// Navigates to the details view for the specified user.
+    /// </summary>
+    /// <param name="userId">The ID of the user to view details for.</param>
     [RelayCommand]
     private void ViewUserDetails(string userId)
     {
