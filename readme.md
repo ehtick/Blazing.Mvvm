@@ -74,7 +74,7 @@ Install the package via .NET CLI or the NuGet Package Manager.
 #### .NET CLI
 
 ```bash
-dotnet add package Blazing. Mvvm
+dotnet add package Blazing.Mvvm
 ```
 
 #### NuGet Package Manager
@@ -762,7 +762,7 @@ public sealed partial class EditContactViewModel : ViewModelBase, IDisposable
 
 ### Subpath Hosting
 
-Blazing. Mvvm supports hosting your Blazor application under a subpath of a web server. This is useful when you want to serve your application from a specific URL segment rather than the domain root (e.g., `https://example.com/myapp` instead of `https://example.com`).
+Blazing.Mvvm supports hosting your Blazor application under a subpath of a web server. This is useful when you want to serve your application from a specific URL segment rather than the domain root (e.g., `https://example.com/myapp` instead of `https://example.com`).
 
 #### Automatic Base Path Detection (Recommended)
 
@@ -861,7 +861,7 @@ builder.Services.AddMvvm(options =>
 
 #### YARP (Yet Another Reverse Proxy) Support
 
-YARP scenarios are automatically supported. When YARP sets the `PathBase` on incoming requests, Blazing. Mvvm automatically detects and uses it for navigation.
+YARP scenarios are automatically supported. When YARP sets the `PathBase` on incoming requests, Blazing.Mvvm automatically detects and uses it for navigation.
 
 **1. Configure YARP in `appsettings.json`**
 
@@ -1024,7 +1024,7 @@ For more information about ASP.NET Core subpath hosting and YARP configuration, 
 
 ### Supported Navigation Route Patterns
 
-Blazing. Mvvm supports a comprehensive set of route patterns for flexible navigation in your Blazor applications. All patterns work seamlessly with both type-based navigation (`NavigateTo<TViewModel>`) and keyed navigation (`NavigateTo(key)`).
+Blazing.Mvvm supports a comprehensive set of route patterns for flexible navigation in your Blazor applications. All patterns work seamlessly with both type-based navigation (`NavigateTo<TViewModel>`) and keyed navigation (`NavigateTo(key)`).
 
 #### Simple Routes
 
