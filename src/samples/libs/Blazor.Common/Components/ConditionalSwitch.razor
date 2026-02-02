@@ -1,0 +1,10 @@
+<CascadingValue Value="this">
+    <div style="display: none;">
+        @ChildContent
+    </div>
+</CascadingValue>
+
+@if (_renderFragment != null)
+{
+    @_renderFragment
+}

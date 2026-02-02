@@ -1,4 +1,5 @@
-using Blazing.Mvvm.Sample.Server.Models;
+using Blazing.Mvvm.Sample.Shared.Data;
+using Blazing.Mvvm.Sample.Shared.Models;
 
 namespace Blazing.Mvvm.Sample.Server.Data;
 

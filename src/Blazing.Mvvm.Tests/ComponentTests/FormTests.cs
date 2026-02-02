@@ -1,6 +1,6 @@
 ﻿using AngleSharp.Dom;
-using Blazing.Mvvm.Sample.WebApp.Client.Pages;
-using Blazing.Mvvm.Sample.WebApp.Client.ViewModels;
+using Blazing.Mvvm.Sample.Shared.Pages;
+using Blazing.Mvvm.Sample.Shared.ViewModels;
 using Bunit;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;

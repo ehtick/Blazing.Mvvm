@@ -18,9 +18,8 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libs\Blazor.Common\Blazing.Common.csproj" />
-    <ProjectReference Include="..\..\libs\Blazor.Lists\Blazing.Lists.csproj" />
-    <ProjectReference Include="..\..\libs\Blazor.Tabs\Blazing.Tabs.csproj" />
+    <ProjectReference Include="..\..\..\libs\Blazor.Lists\Blazing.Lists.csproj" />
+    <ProjectReference Include="..\..\..\libs\Blazor.Tabs\Blazing.Tabs.csproj" />
     <ProjectReference Include="..\HybridSample.Core\HybridSample.Core.csproj" />
   </ItemGroup>
 

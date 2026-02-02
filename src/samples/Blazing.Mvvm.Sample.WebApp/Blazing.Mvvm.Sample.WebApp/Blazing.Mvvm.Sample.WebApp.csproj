@@ -5,11 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Components\Routes.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Blazing.Mvvm\Blazing.Mvvm.csproj" />
+    <ProjectReference Include="..\..\libs\Blazing.Mvvm.Sample.Shared\Blazing.Mvvm.Sample.Shared.csproj" />
     <ProjectReference Include="..\Blazing.Mvvm.Sample.WebApp.Client\Blazing.Mvvm.Sample.WebApp.Client.csproj" />
   </ItemGroup>
 

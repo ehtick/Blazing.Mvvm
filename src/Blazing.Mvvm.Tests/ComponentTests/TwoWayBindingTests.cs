@@ -20,7 +20,7 @@ public class TwoWayBindingTests : ComponentTestBase
     public void MvvmComponentBase_WithEventCallback_ShouldAutomaticallyEnableTwoWayBinding()
     {
         // Arrange
-        var viewModel = CreateInstance<TwoWayBindingTestViewModel>(true);
+        var viewModel = new TwoWayBindingTestViewModel();
         Services.AddSingleton(_ => viewModel);
 
         var parentComponent = RenderComponent<TwoWayBindingTestComponent>();
@@ -62,7 +62,7 @@ public class TwoWayBindingTests : ComponentTestBase
     public void MvvmComponentBase_WithoutEventCallback_ShouldNotEnableTwoWayBinding()
     {
         // Arrange
-        var viewModel = CreateInstance<TwoWayBindingTestViewModel>(true);
+        var viewModel = new TwoWayBindingTestViewModel();
         Services.AddSingleton(_ => viewModel);
 
         var parentComponent = RenderComponent<TwoWayBindingNoCallbackTestComponent>();
@@ -83,7 +83,7 @@ public class TwoWayBindingTests : ComponentTestBase
     public void MvvmComponentBase_WithMultipleEventCallbacks_ShouldBindAllProperties()
     {
         // Arrange
-        var viewModel = CreateInstance<MultiPropertyTestViewModel>(true);
+        var viewModel = new MultiPropertyTestViewModel();
         Services.AddSingleton(_ => viewModel);
 
         var parentComponent = RenderComponent<MultiPropertyTestComponent>();
@@ -107,7 +107,7 @@ public class TwoWayBindingTests : ComponentTestBase
     public void MvvmComponentBase_WithIncorrectNamingConvention_ShouldNotEnableTwoWayBinding()
     {
         // Arrange
-        var viewModel = CreateInstance<TwoWayBindingTestViewModel>(true);
+        var viewModel = new TwoWayBindingTestViewModel();
         Services.AddSingleton(_ => viewModel);
 
         var parentComponent = RenderComponent<IncorrectNamingTestComponent>();
@@ -127,7 +127,7 @@ public class TwoWayBindingTests : ComponentTestBase
     public void MvvmComponentBase_WhenValueUnchanged_ShouldNotInvokeCallback()
     {
         // Arrange
-        var viewModel = CreateInstance<TwoWayBindingTestViewModel>(true);
+        var viewModel = new TwoWayBindingTestViewModel();
         viewModel.Counter = 5;
         Services.AddSingleton(_ => viewModel);
 
@@ -150,7 +150,7 @@ public class TwoWayBindingTests : ComponentTestBase
     public void MvvmComponentBase_WhenDisposed_ShouldUnsubscribeFromPropertyChanged()
     {
         // Arrange
-        var viewModel = CreateInstance<TwoWayBindingTestViewModel>(true);
+        var viewModel = new TwoWayBindingTestViewModel();
         Services.AddSingleton(_ => viewModel);
 
         var parentComponent = RenderComponent<TwoWayBindingTestComponent>();

@@ -1,7 +1,11 @@
-using Blazing.SubpathHosting.Server.Models;
+using Blazing.Mvvm.Sample.Shared.Data;
+using Blazing.Mvvm.Sample.Shared.Models;
 
 namespace Blazing.SubpathHosting.Server.Data;
 
+/// <summary>
+/// Provides weather forecast data retrieval services.
+/// </summary>
 public class WeatherService : IWeatherService
 {
     private static readonly string[] Summaries =
@@ -9,6 +13,7 @@ public class WeatherService : IWeatherService
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
     ];
 
+    /// <inheritdoc />
     public async Task<IEnumerable<WeatherForecast>?> GetForecastAsync(CancellationToken cancellationToken = default)
     {
         await Task.Delay(1000, cancellationToken);

@@ -150,7 +150,7 @@ public class ServicesExtensionTests
         var sut = new ServiceCollection();
 
         // Act
-        sut.AddMvvm(c => c.RegisterViewModelsFromAssemblyContaining<Sample.WebApp.Client._Imports>());
+        sut.AddMvvm(c => c.RegisterViewModelsFromAssemblyContaining<Sample.Shared.ViewModels.CounterViewModel>());
 
         // Assert
         sut.Contains(vmServiceDescriptor, ServiceDescriptorComparer.Comparer).Should().BeTrue();
@@ -178,16 +178,16 @@ public class ServicesExtensionTests
 
         public static TheoryData<ServiceDescriptor> ViewModelsInDependentAssembly = new()
         {
-            { ServiceDescriptor.Transient<Sample.WebApp.Client.ViewModels.EditContactViewModel, Sample.WebApp.Client.ViewModels.EditContactViewModel>() },
-            { ServiceDescriptor.Transient<Sample.WebApp.Client.ViewModels.HexEntryViewModel, Sample.WebApp.Client.ViewModels.HexEntryViewModel>() },
-            { ServiceDescriptor.Transient<Sample.WebApp.Client.ViewModels.ITestNavigationViewModel, Sample.WebApp.Client.ViewModels.TestNavigationViewModel>() },
-            { ServiceDescriptor.Transient<Sample.WebApp.Client.ViewModels.MainLayoutViewModel, Sample.WebApp.Client.ViewModels.MainLayoutViewModel>() },
-            { ServiceDescriptor.Transient<Sample.WebApp.Client.ViewModels.TextEntryViewModel, Sample.WebApp.Client.ViewModels.TextEntryViewModel>() },
-            { ServiceDescriptor.KeyedTransient<Sample.WebApp.Client.ViewModels.HexTranslateViewModel, Sample.WebApp.Client.ViewModels.HexTranslateViewModel>(nameof(Sample.WebApp.Client.ViewModels.HexTranslateViewModel)) },
+            { ServiceDescriptor.Transient<Sample.Shared.ViewModels.EditContactViewModel, Sample.Shared.ViewModels.EditContactViewModel>() },
+            { ServiceDescriptor.Transient<Sample.Shared.ViewModels.HexEntryViewModel, Sample.Shared.ViewModels.HexEntryViewModel>() },
+            { ServiceDescriptor.Scoped<Sample.Shared.ViewModels.ITestNavigationViewModel, Sample.Shared.ViewModels.TestNavigationViewModel>() },
+            { ServiceDescriptor.Scoped<Sample.Shared.ViewModels.MainLayoutViewModel, Sample.Shared.ViewModels.MainLayoutViewModel>() },
+            { ServiceDescriptor.Transient<Sample.Shared.ViewModels.TextEntryViewModel, Sample.Shared.ViewModels.TextEntryViewModel>() },
+            { ServiceDescriptor.KeyedTransient<Sample.Shared.ViewModels.HexTranslateViewModel, Sample.Shared.ViewModels.HexTranslateViewModel>(nameof(Sample.Shared.ViewModels.HexTranslateViewModel)) },
 
-            { ServiceDescriptor.Scoped<Sample.WebApp.Client.ViewModels.FetchDataViewModel, Sample.WebApp.Client.ViewModels.FetchDataViewModel>() },
+            { ServiceDescriptor.Scoped<Sample.Shared.ViewModels.FetchDataViewModel, Sample.Shared.ViewModels.FetchDataViewModel>() },
 
-            { ServiceDescriptor.Singleton<Sample.WebApp.Client.ViewModels.CounterViewModel, Sample.WebApp.Client.ViewModels.CounterViewModel>() }
+            { ServiceDescriptor.Scoped<Sample.Shared.ViewModels.CounterViewModel, Sample.Shared.ViewModels.CounterViewModel>() }
         };
     }
 }

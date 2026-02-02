@@ -2,7 +2,7 @@
 <!-- TOC -->
 #### Table of Contents
 
-- [V3.2.0 - 6 January 2025](#v3.2.0-6-january-2025)
+- [V3.2.1 - 2 February 2026](#v3.2.1-2-february-2026)
 - [V3.2.0 - 7 January 2026](#v3.2.0-7-january-2026)
 - [V3.1.0 - 3 December 2025](#v3.1.0-3-december-2025)
 - [V3.0.0 - 18 November 2025](#v3.0.0-18-november-2025)
@@ -22,7 +22,35 @@
 
 <!-- TOC -->
 
-### V3.2.0 - 6 January 2025
+### V3.2.1 - 2 February 2026
+
+This maintenance release focuses on improvements to the sample project and bug fixes.
+
+**Improvements:**
+- **IAsyncRelayCommand Edge Case Fix:** ([Issue #65](https://github.com/gragra33/Blazing.Mvvm/issues/65)) Improved support for edge cases where `PropertyChanged` events were blocked when `ExecutionTask` is awaited, particularly when `AllowConcurrentExecutions` is set to `false`. This ensures UI updates propagate correctly even when awaiting long-running async commands. [@gragra33](https://github.com/gragra33) & [@teunlielu](https://github.com/teunlielu)
+
+> [!WARNING]
+> Updates to `ViewModelBase` and `ValidatorViewModelBase` now implement `IDisposable` for `PropertyChanged` event tracking. This may cause build errors when `IDisposable` is implemented manually. Use `protected override void Dispose(bool disposing)` to handle manual disposal in derived classes.
+
+**Sample Project Refactoring:**
+- **Major Consolidation:** Refactored `Blazing.Mvvm.Sample.Server`, `Blazing.Mvvm.Sample.Wasm`, `Blazing.Mvvm.Sample.WebApp`, `Blazing.Mvvm.Sample.HybridMaui`, and `Blazing.SubpathHosting.Server` to use a centralized **` Blazing.Mvvm.Sample.Shared`** library. [@gragra33](https://github.com/gragra33)
+- **Integrated Standalone Samples:** Moved content from `ParameterResolution.Sample.Wasm` and `Blazing.Mvvm.ParentChildSample` into the shared library, making these patterns available across all sample applications. [@gragra33](https://github.com/gragra33)
+- **New RelayCommand Sample Page:** Added comprehensive `RelayCommands` page demonstrating synchronous and asynchronous command patterns, `AllowConcurrentExecutions` behavior, command parameters, and `CanExecute` validation. [@gragra33](https://github.com/gragra33)
+
+**Component Libraries:**
+- **MvvmButton Component:** New MVVM-aware button component (`Blazing.Buttons`) with integrated command binding and automatic state management. [@gragra33](https://github.com/gragra33)
+- **Bootstrap Components:** Added production-ready Bootstrap 5 wrapper components, including `BootstrapAccordion`, `BootstrapBreadcrumbs`, `BootstrapCard`, `BootstrapNavMenu`, and `BootstrapRowGroup` to `Blazing.Mvvm.Sample.Shared`. [@gragra33](https://github.com/gragra33)
+- **ConditionalSwitch Component:** Added declarative conditional rendering components (`ConditionalSwitch`, `When`, `Otherwise`) to `Blazing.Common` library. [@gragra33](https://github.com/gragra33)
+
+**Documentation:**
+- Updated `Blazing.SubpathHosting.Server` readme with comprehensive information about sample architecture, component libraries, and recent updates. [@gragra33](https://github.com/gragra33)
+- Added reference to **[Subpath_Hosting_Guidance.md](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.SubpathHosting.Server/Subpath_Hosting_Guidance.md)** for detailed subpath hosting best practices. [@gragra33](https://github.com/gragra33)
+
+**Benefits of Refactoring:**
+- Demonstrates best practices for code sharing across Blazor hosting models (Server, WebAssembly, Web App, Hybrid MAUI)
+- Reduces code duplication and maintenance overhead
+- Provides consistent examples across all hosting models
+- Easier to add new features that work everywhere
 
 ### V3.2.0 - 7 January 2026
 
