@@ -1,4 +1,5 @@
-using Blazing.SubpathHosting.Server.Models;
+using Blazing.Mvvm.Sample.Shared.Data;
+using Blazing.Mvvm.Sample.Shared.Models;
 
 namespace Blazing.SubpathHosting.Server.Data;
 

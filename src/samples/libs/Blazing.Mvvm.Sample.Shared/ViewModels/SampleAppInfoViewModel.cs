@@ -41,7 +41,8 @@ public sealed partial class SampleAppInfoViewModel : ViewModelBase
         switch (page.ToLowerInvariant())
         {
             case "relaycommands":
-                _navigationManager.NavigateTo("/relaycommands");
+                // do not use "/relaycommands" as it bypasses PathBase via <base href> for the routing system - very important for SubPaths!
+                _navigationManager.NavigateTo("relaycommands");
                 break;
             case "users":
                 _mvvmNavigationManager.NavigateTo<UsersViewModel>();

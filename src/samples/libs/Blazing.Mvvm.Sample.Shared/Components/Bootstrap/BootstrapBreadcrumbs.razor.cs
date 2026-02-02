@@ -51,15 +51,15 @@ public partial class BootstrapBreadcrumbs : ComponentBase, IDisposable
     {
         _breadcrumbs.Clear();
         
-        var uri = new Uri(Nav.Uri);
-        var path = uri.AbsolutePath.TrimStart('/');
+        // Use ToBaseRelativePath to automatically handle PathBase
+        var path = Nav.ToBaseRelativePath(Nav.Uri).TrimStart('/');
         
         // Don't show breadcrumbs on home page
         if (string.IsNullOrEmpty(path))
             return;
 
-        // Always start with Home
-        _breadcrumbs.Add(("Home", "/"));
+        // Always start with Home (empty string respects PathBase via <base href>)
+        _breadcrumbs.Add(("Home", ""));
 
         var segments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
         var currentPath = "";
