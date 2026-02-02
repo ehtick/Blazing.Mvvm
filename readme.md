@@ -1,10 +1,8 @@
 # Blazor Extension for the MVVM CommunityToolkit
 
-[![NuGet Version](https://img.shields.io/nuget/v/Blazing.Mvvm.svg)](https://www.nuget.org/packages/Blazing.Mvvm)
-[![NuGet Downloads](https://img.shields.io/nuget/dt/Blazing.Mvvm.svg)](https://www.nuget.org/packages/Blazing.Mvvm)
-[![.NET 8+](https://img.shields.io/badge/.NET-8%2B-512BD4)](https://dotnet.microsoft.com/download)
+[![NuGet Version](https://img.shields.io/nuget/v/Blazing.Mvvm.svg)](https://www.nuget.org/packages/Blazing.Mvvm) [![NuGet Downloads](https://img.shields.io/nuget/dt/Blazing.Mvvm.svg)](https://www.nuget.org/packages/Blazing.Mvvm) [![.NET 8+](https://img.shields.io/badge/.NET-8%2B-512BD4)](https://dotnet.microsoft.com/download)
 
-🔥 **Blazing.Mvvm** brings full MVVM support to Blazor applications through seamless integration with the [CommunityToolkit.Mvvm](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/). This library supports all Blazor hosting models including Server, WebAssembly (WASM), Static Server-Side Rendering (SSR), Auto, Hybrid (WPF, WinForms, Avalonia), and MAUI. It features strongly-typed ViewModel-first navigation, automatic ViewModel registration and discovery, parameter resolution between Views and ViewModels, validation support with `ObservableValidator`, and comprehensive lifecycle management. The library includes extensive sample projects and complete documentation to help you get started quickly.
+🔥 **Blazing.Mvvm** brings full MVVM support to Blazor applications through seamless integration with the [CommunityToolkit.Mvvm](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/). This library supports all Blazor hosting models, including Server, WebAssembly (WASM), Static Server-Side Rendering (SSR), Auto, Hybrid (WPF, WinForms, Avalonia), and MAUI. It features strongly-typed ViewModel-first navigation, automatic ViewModel registration and discovery, parameter resolution between Views and ViewModels, validation support with `ObservableValidator`, and comprehensive lifecycle management. The library includes extensive sample projects and complete documentation to help you get started quickly.
 
 <!-- TOC -->
 ### Table of Contents
@@ -24,6 +22,7 @@
   - [Documentation](#documentation)
     - [View Model](#view-model)
       - [Lifecycle Methods](#lifecycle-methods)
+      - [IDisposable Implementation](#idisposable-implementation)
       - [Service Registration](#service-registration)
         - [Registering ViewModels with Interfaces or Abstract Classes](#registering-viewmodels-with-interfaces-or-abstract-classes)
         - [Registering Keyed ViewModels](#registering-keyed-viewmodels)
@@ -54,8 +53,10 @@
       - [Blazor Hosting Model Samples](#blazor-hosting-model-samples)
       - [Blazor Hybrid Samples](#blazor-hybrid-samples)
       - [Specialized Samples](#specialized-samples)
+      - [Component Libraries](#component-libraries)
       - [Running Samples with Different .NET Target Frameworks](#running-samples-with-different.net-target-frameworks)
   - [History](#history)
+    - [V3.2.1 - 2 February 2026](#v321-2-february-2026)
     - [V3.2.0 - 7 January 2026](#v3.2.0-7-january-2026)
     - [V3.1.0 - 3 December 2025](#v3.1.0-3-december-2025)
     - [V3.0.0 - 18 November 2025](#v3.0.0-18-november-2025)
@@ -73,7 +74,7 @@ Install the package via .NET CLI or the NuGet Package Manager.
 #### .NET CLI
 
 ```bash
-dotnet add package Blazing.Mvvm
+dotnet add package Blazing. Mvvm
 ```
 
 #### NuGet Package Manager
@@ -84,7 +85,7 @@ Install-Package Blazing.Mvvm
 
 ### Configuration
 
-Configure the library in your `Program.cs` file. The `AddMvvm` method will add the required services for the library and automatically register ViewModels that inherit from the `ViewModelBase`, `RecipientViewModelBase`, or `ValidatorViewModelBase` class in the calling assembly.
+Configure the library in your `Program.cs` file. The `AddMvvm` method adds the required services for the library and automatically registers ViewModels that inherit from `ViewModelBase`, `RecipientViewModelBase`, or `ValidatorViewModelBase` in the calling assembly.
 
 ```csharp
 using Blazing.Mvvm;
@@ -95,7 +96,8 @@ builder.Services.AddMvvm(options =>
 });
 ```
 
-> **Note:** Since v3.1.0, the `BasePath` property is automatically detected from the application's base URI and is no longer required for subpath hosting or YARP scenarios. See the [Subpath Hosting](#subpath-hosting) section for details.
+> [!NOTE]
+> Since v3.1.0, the `BasePath` property is automatically detected from the application's base URI and is no longer required for subpath hosting or YARP scenarios. See the [Subpath Hosting](#subpath-hosting) section for details.
 
 If you are using a different hosting model, set the `HostingModelType` property to the appropriate value. The available options are:
 
@@ -165,7 +167,8 @@ public sealed partial class FetchDataViewModel : ViewModelBase, IDisposable
 
 #### Create your Page inheriting the `MvvmComponentBase<TViewModel>` component
 
-> ***NOTE:*** If working with repositories, database services, etc, that require a scope, then use `MvvmOwningComponentBase<TViewModel>` instead.
+> [!NOTE]
+> If working with repositories, database services, etc., that require a scope, then use `MvvmOwningComponentBase<TViewModel>` instead.
 
 ```xml
 @page "/fetchdata"
@@ -207,7 +210,7 @@ else
 
 ## Give a ⭐
 
-If you like or are using this project to learn or start your solution, please give it a star. Thanks!
+If you like this project or are using it to learn or start your own solution, please give it a star. Thanks!
 
 Also, if you find this library useful, and you're feeling really generous, then please consider [buying me a coffee ☕](https://bmc.link/gragra33).
 
@@ -246,6 +249,47 @@ The `ViewModelBase`, `RecipientViewModelBase`, and `ValidatorViewModelBase` clas
 - `OnParametersSet`
 - `OnParametersSetAsync`
 - `ShouldRender`
+
+#### IDisposable Implementation
+
+> [!NOTE]
+> **Added v3.2.1**, all ViewModel base classes (`ViewModelBase`, `RecipientViewModelBase`, and `ValidatorViewModelBase`) now implement `IDisposable` to provide automatic cleanup of `PropertyChanged` event subscriptions for `IAsyncRelayCommand` instances.
+
+**Automatic Cleanup:**
+When a ViewModel is disposed, it automatically unsubscribes from all `IAsyncRelayCommand` `PropertyChanged` events, preventing memory leaks and ensuring proper resource cleanup. This is particularly important for commands with `AllowConcurrentExecutions` set to `false`, where the framework monitors the command's `IsRunning` property to trigger UI updates.
+
+**Manual Disposal in Derived Classes:**
+If you need to dispose of additional resources in your ViewModel, override the `Dispose(bool disposing)` method:
+
+```csharp
+[ViewModelDefinition(Lifetime = ServiceLifetime.Scoped)]
+public sealed partial class MyViewModel : ViewModelBase
+{
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
+    
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            // Dispose of your managed resources here
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource.Dispose();
+        }
+        
+        // Always call base to ensure command subscriptions are cleaned up
+        base.Dispose(disposing);
+    }
+}
+```
+
+> [!WARNING]
+> If your ViewModel previously implemented `IDisposable` manually, you must change `public void Dispose()` to `protected override void Dispose(bool disposing)` to avoid build errors. The base classes now handle the `IDisposable` pattern implementation.
+
+**Benefits:**
+- ✅ **Automatic Memory Leak Prevention** - Command event subscriptions are automatically cleaned up
+- ✅ **Simplified Code** - No need to manually track and unsubscribe from command events
+- ✅ **Consistent Pattern** - All ViewModels follow the standard .NET dispose pattern
+- ✅ **Better Performance** - Proper cleanup ensures commands and ViewModels are garbage collected efficiently
 
 #### Service Registration
 
@@ -287,7 +331,7 @@ In the `View` component, inherit the `MvvmComponentBase` type and set the generi
 
 ##### Registering Keyed ViewModels
 
-To register the `ViewModel` as a keyed service, use the `ViewModelDefinition` attribute (this also applies to generic variant) and set the `Key` property:
+To register the `ViewModel` as a keyed service, use the `ViewModelDefinition` attribute (this also applies to a generic variant) and set the `Key` property:
 
 ```csharp
 [ViewModelDefinition(Key = "FetchDataViewModel")]
@@ -307,7 +351,7 @@ In the `View` component, use the `ViewModelKey` attribute to specify the key of 
 
 #### Parameter Resolution
 
-The library supports passing parameter values to the `ViewModel` which are defined in the `View`.
+The library supports passing parameter values to the `ViewModel` from the `View`.
 
 This feature is opt-in. To enable it, set the `ParameterResolutionMode` property to `ViewAndViewModel` in the `AddMvvm` method. This will resolve parameters in both the `View` component and the `ViewModel`.
 
@@ -459,7 +503,8 @@ public partial class CounterComponentViewModel : ViewModelBase
 
 The feature automatically detects matching EventCallback parameters and wires them up during component initialization, with proper disposal when the component is removed.
 
-> **Working Example:** For a complete working demonstration of Parameter Resolution and Automatic Two-Way Binding, see the **[ParameterResolution.Sample.Wasm](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/ParameterResolution.Sample.Wasm)** sample project.
+> [!NOTE]
+> For a complete working demonstration of **Parameter Resolution** and **Automatic Two-Way Binding**, see the **ParameterResolution** sample page in most [Sample Projects](#sample-projects).
 
 ### MVVM Navigation
 
@@ -484,6 +529,7 @@ When navigation is required, a quick lookup is performed, and the Blazor `Naviga
 </div>
 ```
 
+> [!NOTE]
 > The `MvvmNavLink` component is based on the Blazor `NavLink` component and includes additional `TViewModel` and `RelativeUri` properties. Internally, it uses the `MvvmNavigationManager` for navigation.
 
 **Navigate by ViewModel using the `MvvmNavigationManager` from code:**
@@ -586,6 +632,10 @@ The same principle works with the `MvvmKeyNavLink` component:
     </MvvmKeyNavLink>
 </div>
 ```
+
+#### Navigation Fallback
+
+`MvvmNavigationManager` still supports normal `NavigationManager` magic string navigation,  as it is still used internally by `MvvmNavigationManager`.
 
 ### MVVM Validation
 
@@ -712,11 +762,12 @@ public sealed partial class EditContactViewModel : ViewModelBase, IDisposable
 
 ### Subpath Hosting
 
-Blazing.Mvvm supports hosting your Blazor application under a subpath of a web server. This is useful when you want to serve your application from a specific URL segment rather than the root of the domain (e.g., `https://example.com/myapp` instead of `https://example.com`).
+Blazing. Mvvm supports hosting your Blazor application under a subpath of a web server. This is useful when you want to serve your application from a specific URL segment rather than the domain root (e.g., `https://example.com/myapp` instead of `https://example.com`).
 
 #### Automatic Base Path Detection (Recommended)
 
-**Since v3.1.0**, Blazing.Mvvm automatically detects the base path from `NavigationManager.BaseUri`. In most scenarios, including YARP reverse proxy setups, **no manual `BasePath` configuration is required**.
+> [!NOTE]
+> **Since v3.1.0**, Blazing.Mvvm automatically detects the base path from `NavigationManager.BaseUri`. In most scenarios, including YARP reverse proxy setups, **no manual `BasePath` configuration is required**.
 
 The base path is dynamically extracted at navigation time, making your application work seamlessly in:
 - Standard subpath hosting
@@ -777,7 +828,7 @@ You can hard-code the path, eg: `<base href="/fu/bar/" />`, however, it's better
 }
 ```
 
-**_App.razor (Razor Components) Example:_**
+**_App. razor (Razor Components) Example:_**
 
 ```razor
 <!DOCTYPE html>
@@ -810,7 +861,7 @@ builder.Services.AddMvvm(options =>
 
 #### YARP (Yet Another Reverse Proxy) Support
 
-YARP scenarios are automatically supported. When YARP sets the `PathBase` on incoming requests, Blazing.Mvvm automatically detects and uses it for navigation.
+YARP scenarios are automatically supported. When YARP sets the `PathBase` on incoming requests, Blazing. Mvvm automatically detects and uses it for navigation.
 
 **1. Configure YARP in `appsettings.json`**
 
@@ -889,7 +940,7 @@ Do not hard-code the path. Yarp will use a dynamic `PathBase` for `baseHref`, so
 }
 ```
 
-**_App.razor (Razor Components) Example:_**
+**_App. razor (Razor Components) Example:_**
 
 ```razor
 <!DOCTYPE html>
@@ -964,6 +1015,7 @@ For complete working examples, see:
 #### Further Reading
 
 For more information about ASP.NET Core subpath hosting and YARP configuration, see:
+- **[Subpath_Hosting_Guidance.md](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.SubpathHosting.Server/Subpath_Hosting_Guidance.md)** for comprehensive guidance on common pitfalls, form handling, navigation best practices, and testing strategies.
 - **[ASP.NET Core Path Base Middleware](https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer#path-base)** - Official documentation on configuring path base for subpath hosting
 - **[YARP - Yet Another Reverse Proxy](https://microsoft.github.io/reverse-proxy/)** - Official YARP documentation and getting started guide
 - **[YARP Configuration](https://microsoft.github.io/reverse-proxy/articles/config-files.html)** - Detailed configuration options for routes, clusters, and transforms
@@ -972,7 +1024,7 @@ For more information about ASP.NET Core subpath hosting and YARP configuration, 
 
 ### Supported Navigation Route Patterns
 
-Blazing.Mvvm supports a comprehensive set of route patterns for flexible navigation in your Blazor applications. All patterns work seamlessly with both type-based navigation (`NavigateTo<TViewModel>`) and keyed navigation (`NavigateTo(key)`).
+Blazing. Mvvm supports a comprehensive set of route patterns for flexible navigation in your Blazor applications. All patterns work seamlessly with both type-based navigation (`NavigateTo<TViewModel>`) and keyed navigation (`NavigateTo(key)`).
 
 #### Simple Routes
 
@@ -1081,11 +1133,7 @@ mvvmNavigationManager.NavigateTo<ProjectViewModel>("abc/ws-123/proj-456");
 
 **Working Examples:**
 
-For complete working examples demonstrating these route patterns, see:
-- **[Blazing.Mvvm.Sample.Server](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.Server)** - User and post management with `/users/{userId}/posts/{postId}` routes
-- **[Blazing.Mvvm.Sample.WebApp](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.WebApp)** - Enhanced with multi-parameter navigation examples
-- **[Blazing.Mvvm.Sample.Wasm](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.Wasm)** - Added complex route pattern demonstrations
-- **[Blazing.Mvvm.Sample.HybridMaui](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.HybridMaui)** - Updated with route parameter examples
+For complete working examples demonstrating these route patterns, see [Sample Projects](#sample-projects).
 
 ### Complex Multi-Project ViewModel Registration
 
@@ -1147,18 +1195,29 @@ For working examples, see the Hybrid sample projects:
 
 ### Sample Projects
 
-The repository includes several sample projects demonstrating different Blazor hosting models and scenarios:
+The repository includes several sample projects demonstrating different Blazor hosting models and scenarios. **As of February 2, 2026**, all Blazor MVVM samples have been refactored to use a centralized **` Blazing.Mvvm.Sample.Shared`** project, demonstrating best practices for code sharing across different hosting models.
 
 #### Blazor Hosting Model Samples
 
-- **[Blazing.Mvvm.Sample.Server](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.Server)** - Blazor Server App sample with user and post management demonstrating complex route patterns
-- **[Blazing.Mvvm.Sample.Wasm](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.Wasm)** - Blazor WebAssembly (WASM) App sample with navigation patterns
-- **[Blazing.Mvvm.Sample.WebApp](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.WebApp)** - Blazor Web App (.NET 8+) sample with query string and parameter navigation
-- **[Blazing.Mvvm.Sample.HybridMaui](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.HybridMaui)** - Blazor Hybrid MAUI sample demonstrating route patterns in mobile applications
+All of the following samples now reference the shared `Blazing.Mvvm.Sample.Shared` library, which contains common components, ViewModels, pages, and services:
+
+- **[Blazing.Mvvm.Sample.Server](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.Server)** - Blazor Server App sample
+- **[Blazing.Mvvm.Sample.Wasm](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.Wasm)** - Blazor WebAssembly (WASM) App sample
+- **[Blazing.Mvvm.Sample.WebApp](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.WebApp)** - Blazor Web App (.NET 8+) sample
+- **[Blazing.Mvvm.Sample.HybridMaui](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.Mvvm.Sample.HybridMaui)** - Blazor Hybrid MAUI sample
+- **[Blazing.SubpathHosting.Server](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.SubpathHosting.Server)** - Blazor Server Subpath hosting sample
+
+**Shared Content (`Blazing.Mvvm.Sample.Shared`):**
+- **RelayCommand Examples** - Comprehensive demonstrations of synchronous and asynchronous command patterns, including `AllowConcurrentExecutions` behavior
+- **Parameter Resolution** - Automatic two-way binding with `@bind-` syntax (integrated from `ParameterResolution.Sample.Wasm`)
+- **Parent-Child Communication** - Messenger-based component communication patterns (integrated from `Blazing.Mvvm.ParentChildSample`)
+- **Bootstrap Components** - Reusable Bootstrap 5 wrapper components
+- **MVVM Validation** - Form validation with `ObservableValidator`
+- **Multi-Parameter Routing** - Complex route patterns with multiple parameters and query strings
 
 #### Blazor Hybrid Samples
 
-Modernises the Microsoft's [Xamarin Sample](https://github.com/CommunityToolkit/MVVM-Samples) project, using Blazing.Mvvm, for the [CommunityToolkit.Mvvm](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/).  Minimal changes were made.
+Modernises Microsoft's [Xamarin Sample](https://github.com/CommunityToolkit/MVVM-Samples) project, using Blazing.Mvvm, for the [CommunityToolkit.Mvvm](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/).  Minimal changes were made.
 
 - **[HybridSample.Wpf](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/HybridSamples/HybridSample.Wpf)** - WPF Blazor Hybrid sample
 - **[HybridSample.WinForms](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/HybridSamples/HybridSample.WinForms)** - WinForms Blazor Hybrid sample
@@ -1169,9 +1228,41 @@ Modernises the Microsoft's [Xamarin Sample](https://github.com/CommunityToolkit/
 
 #### Specialized Samples
 
-- **[Blazing.SubpathHosting.Server](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.SubpathHosting.Server)** - Demonstrates subpath hosting configuration
-- **[ParameterResolution.Sample.Wasm](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/ParameterResolution.Sample.Wasm)** - Demonstrates parameter resolution between Views and ViewModels using `ViewParameter` attribute, and automatic two-way binding with `@bind-` syntax
-- **[Blazing.Mvvm.ParentChildSample](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/ParentChildSample)** - Demonstrates dynamic parent-child component communication using Messenger. [Original](https://github.com/gragra33/Blazing.Mvvm.ParentChildSample) repo is now archived.
+- **[Blazing.SubpathHosting.Server](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.SubpathHosting.Server)** - Demonstrates subpath hosting configuration. See **[Subpath_Hosting_Guidance.md](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.SubpathHosting.Server/Subpath_Hosting_Guidance.md)** for comprehensive guidance on common pitfalls, form handling, navigation best practices, and testing strategies.
+
+#### Moved (Archived) Samples
+
+- **[ParameterResolution.Sample.Wasm](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/ParameterResolution.Sample.Wasm)** - **(Archived - now integrated into `Blazing.Mvvm.Sample.Shared`)** Demonstrates parameter resolution between Views and ViewModels using `ViewParameter` attribute, and automatic two-way binding with `@bind-` syntax
+- **[Blazing.Mvvm.ParentChildSample](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/ParentChildSample)** - **(Archived - now integrated into `Blazing.Mvvm.Sample.Shared`)** Demonstrates dynamic parent-child component communication using Messenger. [Original](https://github.com/gragra33/Blazing.Mvvm.ParentChildSample) repo is now archived.
+
+#### Component Libraries
+
+The sample projects include several reusable component libraries that demonstrate MVVM patterns and best practices:
+
+##### MvvmButton (`Blazing.Buttons`)
+- MVVM-aware button component with integrated command binding
+- Automatic disabled state management when commands cannot execute
+- Seamless integration with `IRelayCommand` and `IAsyncRelayCommand`
+- Example usage in all sample applications
+
+##### Bootstrap Components (`Blazing.Mvvm.Sample.Shared/Components/Bootstrap`)
+Production-ready Bootstrap 5 wrapper components demonstrating component composition patterns:
+- **BootstrapAccordion** & **BootstrapAccordionItem** - Collapsible content panels with Bootstrap styling
+- **BootstrapBreadcrumbs** - Navigation breadcrumb trails with MVVM-friendly API
+- **BootstrapCard** - Content containers with headers, footers, and customizable styling
+- **BootstrapNavMenu** & **BootstrapNavMenuGroup** - Hierarchical navigation menus with collapsible groups and JavaScript interop
+- **BootstrapRowGroup** & **BootstrapRowGroupItem** - Grouped row layouts for structured content display
+
+##### Blazor Common Utilities (`Blazing.Common`)
+Shared utility components and helpers used across sample projects:
+- **ConditionalSwitch**, **When**, **Otherwise** - Declarative conditional rendering components (alternative to if/else in markup)
+- **ComponentControlBase**, **ComponentInputControlBase** - Base classes for reusable components
+
+These component libraries are included in the sample projects to demonstrate:
+- How to build reusable, MVVM-aware components
+- Component composition and communication patterns
+- Integration with popular CSS frameworks (Bootstrap 5)
+- Code organization and architectural patterns
 
 #### Running Samples with Different .NET Target Frameworks
 
@@ -1186,6 +1277,36 @@ All sample projects in this repository support multi-targeting across .NET 8, .N
 For detailed instructions on switching between .NET target frameworks and troubleshooting multi-targeting scenarios, see the [Running Samples with Different .NET Versions](docs/Running_Different_NET_Versions.md) guide.
 
 ## History
+
+### V3.2.1 - 2 February 2026
+
+This maintenance release focuses on improvements to the sample project and bug fixes.
+
+**Improvements:**
+- **IAsyncRelayCommand Edge Case Fix:** ([Issue #65](https://github.com/gragra33/Blazing.Mvvm/issues/65)) Improved support for edge cases where `PropertyChanged` events were blocked when `ExecutionTask` is awaited, particularly when `AllowConcurrentExecutions` is set to `false`. This ensures UI updates propagate correctly even when awaiting long-running async commands. [@gragra33](https://github.com/gragra33) & [@teunlielu](https://github.com/teunlielu)
+
+> [!WARNING]
+> Updates to `ViewModelBase` and `ValidatorViewModelBase` now implement `IDisposable` for `PropertyChanged` event tracking. This may cause build errors when `IDisposable` is implemented manually. Use `protected override void Dispose(bool disposing)` to handle manual disposal in derived classes.
+
+**Sample Project Refactoring:**
+- **Major Consolidation:** Refactored `Blazing.Mvvm.Sample.Server`, `Blazing.Mvvm.Sample.Wasm`, `Blazing.Mvvm.Sample.WebApp`, `Blazing.Mvvm.Sample.HybridMaui`, and `Blazing.SubpathHosting.Server` to use a centralized **` Blazing.Mvvm.Sample.Shared`** library. [@gragra33](https://github.com/gragra33)
+- **Integrated Standalone Samples:** Moved content from `ParameterResolution.Sample.Wasm` and `Blazing.Mvvm.ParentChildSample` into the shared library, making these patterns available across all sample applications. [@gragra33](https://github.com/gragra33)
+- **New RelayCommand Sample Page:** Added comprehensive `RelayCommands` page demonstrating synchronous and asynchronous command patterns, `AllowConcurrentExecutions` behavior, command parameters, and `CanExecute` validation. [@gragra33](https://github.com/gragra33)
+
+**Component Libraries:**
+- **MvvmButton Component:** New MVVM-aware button component (`Blazing.Buttons`) with integrated command binding and automatic state management. [@gragra33](https://github.com/gragra33)
+- **Bootstrap Components:** Added production-ready Bootstrap 5 wrapper components, including `BootstrapAccordion`, `BootstrapBreadcrumbs`, `BootstrapCard`, `BootstrapNavMenu`, and `BootstrapRowGroup` to `Blazing.Mvvm.Sample.Shared`. [@gragra33](https://github.com/gragra33)
+- **ConditionalSwitch Component:** Added declarative conditional rendering components (`ConditionalSwitch`, `When`, `Otherwise`) to `Blazing.Common` library. [@gragra33](https://github.com/gragra33)
+
+**Documentation:**
+- Updated `Blazing.SubpathHosting.Server` readme with comprehensive information about sample architecture, component libraries, and recent updates. [@gragra33](https://github.com/gragra33)
+- Added reference to **[Subpath_Hosting_Guidance.md](https://github.com/gragra33/Blazing.Mvvm/tree/master/src/samples/Blazing.SubpathHosting.Server/Subpath_Hosting_Guidance.md)** for detailed subpath hosting best practices. [@gragra33](https://github.com/gragra33)
+
+**Benefits of Refactoring:**
+- Demonstrates best practices for code sharing across Blazor hosting models (Server, WebAssembly, Web App, Hybrid MAUI)
+- Reduces code duplication and maintenance overhead
+- Provides consistent examples across all hosting models
+- Easier to add new features that work everywhere
 
 ### V3.2.0 - 7 January 2026
 
@@ -1245,36 +1366,3 @@ This is a major release with new features and enhancements.
   - Complex multi-project ViewModel registration
   - Running samples with different .NET target frameworks
 - Documentation updates and improvements. [@gragra33](https://github.com/gragra33)
-
-### V2.2.0 - 7 December, 2024
-
-- Added support for `ObservableRecipient` being set to inactive when disposing the `MvvmComponentBase`, `MvvmOwningComponentBase`, `MvvmLayoutComponentBase`, and `RecipientViewModelBase`. [@gragra33](https://github.com/gragra33) & [@teunlielu](https://github.com/teunlielu)
-
-### V2.1.1 4 December, 2024
-
-- Version bump to fix a nuget release issue
-
-### V2.1.0 - 3 December, 2024
-
-- Added MAUI Blazor Hybrid App support + sample HybridMaui app. [@hakakou](https://github.com/hakakou)
-
-### V2.0.0 - 30 November, 2024
-
-This is a major release with breaking changes, migration notes can be found [here](docs/migration-notes/v1.4_to_v2.md).
-
-- Added auto registration and discovery of view models. [@mishael-o](https://github.com/mishael-o)
-- Added support for keyed view models. [@mishael-o](https://github.com/mishael-o)
-- Added support for keyed view models to `MvvmNavLink`, `MvvmKeyNavLink` (new component), `MvvmNavigationManager`, `MvvmComponentBase`, `MvvmOwningComponentBase`, & `MvvmLayoutComponentBase`. [@gragra33](https://github.com/gragra33)
-- Added a `MvvmObservableValidator` component which provides support for `ObservableValidator`. [@mishael-o](https://github.com/mishael-o)
-- Added parameter resolution in the ViewModel. [@mishael-o](https://github.com/mishael-o)
-- Added new `TestKeyedNavigation` samples for Keyed Navigation. [@gragra33](https://github.com/gragra33)
-- Added & Updated tests for all changes made. [@mishael-o](https://github.com/mishael-o) & [@gragra33](https://github.com/gragra33)
-- Added support for .NET 9. [@gragra33](https://github.com/gragra33)
-- Dropped support for .NET 7. [@mishael-o](https://github.com/mishael-o)
-- Documentation updates. [@mishael-o](https://github.com/mishael-o) & [@gragra33](https://github.com/gragra33)
-
-**BREAKING CHANGES:**
-
-- Renamed `BlazorHostingModel` to `BlazorHostingModelType` to avoid confusion
-
-The full history can be found in the [Version Tracking](https://github.com/gragra33/Blazing.Mvvm/blob/master/HISTORY.md) documentation.
